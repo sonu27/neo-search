@@ -26,6 +26,7 @@ csv
         })
         .catch(function (error) {
           console.log(error)
+          session.close();
         })
     )
   })
