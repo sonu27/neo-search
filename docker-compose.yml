@@ -1,0 +1,5 @@
+version: "3"
+services:
+  neo4j:
+    image: neo4j:3.3
+    
