@@ -4,7 +4,7 @@ let session = driver.session()
 
 session
   .run(
-    'CREATE CONSTRAINT ON (u:User) ASSERT u.id IS UNIQUE'
+    'USING PERIODIC COMMIT LOAD CSV WITH HEADERS FROM "file:///users.csv" AS row CREATE (:User { id: row.id })'
   )
   .then(function () {
     session.close()
