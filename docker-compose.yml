@@ -2,11 +2,67 @@ version: "3.3"
 services:
   neo4j:
     image: neo4j:3.3
+    container_name: neo4j
+    environment:
+      - NEO4J_AUTH=none
     volumes:
-      - "/data"
+      - "neodata:/data"
       - "./import_data:/import"
     ports:
       - "7474:7474"
       - "7687:7687"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.0.0
+    container_name: elasticsearch
     environment:
-      - NEO4J_AUTH=none
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - "esdata1:/usr/share/elasticsearch/data"
+    ports:
+      - 9200:9200
+    networks:
+      - esnet
+
+  elasticsearch2:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.0.0
+    container_name: elasticsearch2
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.zen.ping.unicast.hosts=elasticsearch"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - "esdata2:/usr/share/elasticsearch/data"
+    networks:
+      - esnet
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:6.0.0
+    container_name: kibana
+    environment:
+      - "LS_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - 5601:5601
+    networks:
+      - esnet
+    depends_on:
+      - elasticsearch
+
+volumes:
+  neodata:
+  esdata1:
+  esdata2:
+
+networks:
+  esnet:
