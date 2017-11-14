@@ -3,9 +3,12 @@ const driver = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", ""))
 let session = driver.session()
 
 session
-  .run(
-    'USING PERIODIC COMMIT LOAD CSV WITH HEADERS FROM "file:///user_followers.csv" AS row MATCH (u1:User {id: row.followerUserId}), (u2:User {id: row.followedUserId}) CREATE (u1)-[r:FOLLOWS]->(u2)'
-  )
+  .run(`
+    USING PERIODIC COMMIT
+    LOAD CSV WITH HEADERS FROM "file:///user_followers.csv" AS row
+    MATCH (u1:User {id: row.followerUserId}), (u2:User {id: row.followedUserId})
+    CREATE (u1)-[r:FOLLOWS]->(u2)
+  `)
   .then(function () {
     session.close()
     driver.close()

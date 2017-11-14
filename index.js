@@ -3,9 +3,9 @@ const driver = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", ""))
 let session = driver.session()
 
 session
-  .run(
-    'CREATE CONSTRAINT ON (u:User) ASSERT u.id IS UNIQUE'
-  )
+  .run(`
+    CREATE CONSTRAINT ON (u:User) ASSERT u.id IS UNIQUE
+  `)
   .then(function () {
     session.close()
     driver.close()
