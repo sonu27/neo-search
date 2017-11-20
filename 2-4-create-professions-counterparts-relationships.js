@@ -6,7 +6,7 @@ session
   .run(`
     USING PERIODIC COMMIT
     LOAD CSV WITH HEADERS FROM "file:///profession_counterparts.csv" AS row
-    MATCH (p1:Profession {id: row.professionId}), (p2:Profession {id: row.counterpartId})
+    MATCH (p1:Profession {id: toInteger(row.professionId)}), (p2:Profession {id: toInteger(row.counterpartId)})
     CREATE (p1)-[r:HAS_COUNTERPART {equivalence: toFloat(row.equivalence)}]->(p2)
   `)
   .then(function () {
