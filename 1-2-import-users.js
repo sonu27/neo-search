@@ -6,7 +6,7 @@ session
   .run(`
     USING PERIODIC COMMIT
     LOAD CSV WITH HEADERS FROM "file:///users.csv" AS row
-    CREATE (:User { id: row.id, firstName: row.firstName, lastName: row.lastName })
+    CREATE (:User { id: toInteger(row.id), firstName: row.firstName, lastName: row.lastName })
   `)
   .then(function () {
     session.close()
