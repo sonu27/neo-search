@@ -6,7 +6,7 @@ session
   .run(`
     USING PERIODIC COMMIT
     LOAD CSV WITH HEADERS FROM "file:///professions.csv" AS row
-    CREATE (:Profession { id: row.id, name: row.title })
+    CREATE (:Profession { id: toInteger(row.id), name: row.title })
   `)
   .then(function () {
     session.close()
