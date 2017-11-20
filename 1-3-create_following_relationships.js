@@ -6,7 +6,7 @@ session
   .run(`
     USING PERIODIC COMMIT
     LOAD CSV WITH HEADERS FROM "file:///user_followers.csv" AS row
-    MATCH (u1:User {id: row.followerUserId}), (u2:User {id: row.followedUserId})
+    MATCH (u1:User {id: toInteger(row.followerUserId)}), (u2:User {id: toInteger(row.followedUserId)})
     CREATE (u1)-[r:FOLLOWS {followedOn: row.createdAt}]->(u2)
   `)
   .then(function () {

@@ -6,7 +6,7 @@ session
   .run(`
     USING PERIODIC COMMIT
     LOAD CSV WITH HEADERS FROM "file:///user_professions.csv" AS row
-    MATCH (u:User {id: row.userId}), (p:Profession {id: row.professionId})
+    MATCH (u:User {id: toInteger(row.userId)}), (p:Profession {id: toInteger(row.professionId)})
     CREATE (u)-[r:HAS_A]->(p)
   `)
   .then(function () {
