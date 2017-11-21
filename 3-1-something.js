@@ -22,13 +22,13 @@ session
   `)
   .subscribe({
     onNext: function (record) {
-      let t = RecordTransformer().toObject(record)
+      let user = RecordTransformer().toObject(record)
 
       esClient.create({
         index: 'search',
         type: 'user',
-        id: t.id,
-        body: t
+        id: user.id,
+        body: user
       }, function (error, response) {
         
       })
