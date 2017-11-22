@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "elasticsearch": "^14.0.0",
-    "fast-csv": "^2.4.1",
     "neo4j-driver": "^1.5.0"
   }
 }
