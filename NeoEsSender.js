@@ -12,16 +12,18 @@ module.exports = NeoEsSender = (driver) => {
         session
           .run(`
             MATCH (u:User {id: ${id}})
-            OPTIONAL MATCH (u)-[:FOLLOWS]-(u1)-[:FOLLOWS]->(u2)
-            OPTIONAL MATCH (u)-[:HAS_A]-(p)-[:HAS_COUNTERPART]-(p2)
-            RETURN 
+            OPTIONAL MATCH (u)-[:FOLLOWS]->(u1)
+            OPTIONAL MATCH (u1)-[:FOLLOWS]->(u2)
+            OPTIONAL MATCH (u)-[:HAS_A]->(p)
+            RETURN
               u.id AS id,
               u.firstName AS firstName,
               u.lastName AS lastName,
+              u.level AS level,
+              u.createdAt AS createdAt,
               collect(DISTINCT u1.id) AS usersFirstDegree,
               collect(DISTINCT u2.id) AS usersSecondDegree,
-              collect(DISTINCT p.id) AS professionsFirstDegree,
-              collect(DISTINCT p2.id) AS professionsSecondDegree
+              collect(DISTINCT p.id) AS professionsFirstDegree
           `)
           .subscribe({
             onNext: function (record) {
