@@ -16,8 +16,9 @@ module.exports = RecordTransformer = () => {
         'level': level == null ? 0 : level.toNumber(),
         'createdAt': record.get('createdAt'),
         'usersFirstDegree': arrayToNumbers(record.get('usersFirstDegree')),
-        'usersSecondDegree': arrayToNumbers(record.get('usersSecondDegree')),
-        'professionsFirstDegree': arrayToNumbers(record.get('professionsFirstDegree')),
+        //'usersSecondDegree': arrayToNumbers(record.get('usersSecondDegree')),
+        'professionIds': arrayToNumbers(record.get('professionIds')),
+        'professions': record.get('professions'),
       }
 
       return o
