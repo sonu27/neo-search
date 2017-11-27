@@ -8,12 +8,12 @@ module.exports = NeoEsSender = (driver) => {
     'send': (id) => {
       const session = driver.session()
 
-      return new Promise((resolve) => {
+      return new Promise((resolve, reject) => {
         session
           .run(`
             MATCH (u:User {id: ${id}})
             OPTIONAL MATCH (u)-[:FOLLOWS]->(u1)
-            OPTIONAL MATCH (u1)-[:FOLLOWS]->(u2)
+            //OPTIONAL MATCH (u1)-[:FOLLOWS]->(u2)
             OPTIONAL MATCH (u)-[:HAS_A]->(p)
             RETURN
               u.id AS id,
@@ -22,8 +22,9 @@ module.exports = NeoEsSender = (driver) => {
               u.level AS level,
               u.createdAt AS createdAt,
               collect(DISTINCT u1.id) AS usersFirstDegree,
-              collect(DISTINCT u2.id) AS usersSecondDegree,
-              collect(DISTINCT p.id) AS professionsFirstDegree
+              //collect(DISTINCT u2.id) AS usersSecondDegree,
+              collect(DISTINCT p.id) AS professionIds,
+              collect(DISTINCT p.name) AS professions
           `)
           .subscribe({
             onNext: function (record) {
@@ -56,6 +57,7 @@ module.exports = NeoEsSender = (driver) => {
             onError: function (error) {
               console.log(error)
               session.close()
+              reject()
             }
           })
       })
