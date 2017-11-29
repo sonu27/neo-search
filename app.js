@@ -17,6 +17,12 @@ app.get('/professions/:id/related', function (req, res) {
     })
 })
 
+app.get('/professions', async function (req, res) {
+  const data = await EsClient.searchProfessions(req.query.name)
+  
+  res.send({professions: data})
+})
+
 app.get('/users', async function (req, res) {
   // Neo4jClient.getUsersByProfession(req.query.profession)
   // .then((data) => {
