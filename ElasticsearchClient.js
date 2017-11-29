@@ -1,65 +1,95 @@
 const c = require('./config')
 
 const userIndex = 'search'
+const professionIndex = 'profession'
 
 module.exports = ElasticsearchClient = (client) => {
+  const search = (searchOptions) => {
+    return new Promise((resolve, reject) => {
+      client.search(searchOptions, (error, response) => {
+        if (typeof error !== 'undefined') {
+          reject(error)
+        }
+        resolve(response.hits.hits)
+      })
+    })
+  }
+
+  const create = (createOptions) => {
+    return new Promise((resolve, reject) => {
+      client.create(createOptions, (error, response) => {
+        if (typeof error !== 'undefined') {
+          reject(error)
+        }
+        resolve(response)
+      })
+    })
+  }
+
   return {
-    'search': (q) => {
-      return new Promise((resolve, reject) => {
-        const search = {
-          index: userIndex,
-          body: {
-            query: {
-              match: {
-                professions: q
+    'createProfession': (profession) => {
+      return create({
+        index: 'profession',
+        type: 'profession',
+        id: profession.id,
+        body: profession
+      })
+    },
+
+    'searchProfessions': (query) => {
+      const searchOptions = {
+        index: professionIndex,
+        from: 0,
+        size: 100,
+        body: {
+          query: {
+            fuzzy: {
+              name: {
+                value: `${query}`
               }
             }
           }
         }
+      }
+      console.log(searchOptions.body.query)
 
-        client.search(search, (error, response) => {
-          if (typeof error !== 'undefined') {
-            reject(error)
-          }
-          resolve(response.hits.hits)
-        })
-      })
+      return search(searchOptions)
     },
+
     'searchByProfessionIds': (ids) => {
       const queries = ids.map((id) => {
         return {
           match: {
-            professionIds: id
-          }
-        }
-      })
-
-      return new Promise((resolve, reject) => {
-        let search = {
-          index: userIndex,
-          _sourceInclude: [
-              'id',
-              'firstName',
-              'lastName',
-              'level',
-              'professions',
-            ],
-          body: {
-            query: {
-              bool: {
-                should: queries
-              }
+            professionIds: {
+              query: id,
+              boost: 2
             }
           }
         }
-
-        client.search(search, (error, response) => {
-          if (typeof error !== 'undefined') {
-            reject(error)
-          }
-          resolve(response.hits.hits)
-        })
       })
+
+      const searchOptions = {
+        index: userIndex,
+        from: 0,
+        size: 100,
+        _sourceInclude: [
+          'id',
+          'firstName',
+          'lastName',
+          'level',
+          'professions',
+        ],
+        body: {
+          query: {
+            bool: {
+              must: queries
+            }
+          }
+        }
+      }
+      console.log(searchOptions.body.query)
+
+      return search(searchOptions)
     }
   }
 }
