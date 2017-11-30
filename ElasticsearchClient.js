@@ -1,15 +1,17 @@
 const c = require('./config')
 
-const userIndex = 'search'
-const professionIndex = 'profession'
+const userIndex = c.ES_INDEX_USER
+const professionIndex = c.ES_INDEX_PROFESSION
 
 module.exports = ElasticsearchClient = (client) => {
   const search = (searchOptions) => {
     return new Promise((resolve, reject) => {
       client.search(searchOptions, (error, response) => {
         if (typeof error !== 'undefined') {
+          console.log(error)
           reject(error)
         }
+        console.log(response)
         resolve(response.hits.hits)
       })
     })
@@ -19,8 +21,10 @@ module.exports = ElasticsearchClient = (client) => {
     return new Promise((resolve, reject) => {
       client.create(createOptions, (error, response) => {
         if (typeof error !== 'undefined') {
+          console.log(error)
           reject(error)
         }
+        console.log(response)
         resolve(response)
       })
     })
@@ -29,40 +33,52 @@ module.exports = ElasticsearchClient = (client) => {
   return {
     'createProfession': (profession) => {
       return create({
-        index: 'profession',
+        index: professionIndex,
         type: 'profession',
         id: profession.id,
         body: profession
       })
     },
 
-    'searchProfessions': (query) => {
+    'searchProfessions': (query, exclude) => {
+      const exclusions = exclude.map(id => {
+        return {
+          term: {
+            id: id
+          }
+        }
+      })
+
       const searchOptions = {
         index: professionIndex,
         from: 0,
         size: 100,
         body: {
           query: {
-            fuzzy: {
-              name: {
-                value: `${query}`
-              }
+            bool: {
+              must: {
+                match_phrase_prefix: {
+                  name: `${query}`,
+                }
+              },
+              must_not: exclusions
             }
           }
         }
       }
-      console.log(searchOptions.body.query)
 
       return search(searchOptions)
     },
 
-    'searchByProfessionIds': (ids) => {
+    'searchUsersByProfessions': (ids) => {
       const queries = ids.map((id) => {
         return {
           match: {
             professionIds: {
               query: id,
-              boost: 2
+              // fuzziness: 'AUTO',
+              // operator: 'and',
+              // boost: 2
             }
           }
         }
@@ -82,12 +98,11 @@ module.exports = ElasticsearchClient = (client) => {
         body: {
           query: {
             bool: {
-              must: queries
+              should: queries
             }
           }
         }
       }
-      console.log(searchOptions.body.query)
 
       return search(searchOptions)
     }
