@@ -18,27 +18,17 @@ app.get('/professions/:id/related', function (req, res) {
 })
 
 app.get('/professions', async function (req, res) {
-  const data = await EsClient.searchProfessions(req.query.name)
+  const data = await EsClient.searchProfessions(req.query.name, [])
   
   res.send({professions: data})
 })
 
 app.get('/users', async function (req, res) {
-  // Neo4jClient.getUsersByProfession(req.query.profession)
-  // .then((data) => {
-  //   res.send({users: data})
-  // })
+  const professions = req.query.professions.split(',').map(Number)
+  const data = await EsClient.searchUsersByProfessions(professions)
+  const result = data.map(u => u._source)
 
-  // const data = await EsClient.search(req.query.profession)
-
-  const professionIds = await Neo4jClient.searchProfessions(req.query.profession)
-
-
-  const data = await EsClient.searchByProfessionIds(professionIds)
-
-  res.send({users: data})
+  res.json({users: result})
 })
-
-
 
 app.listen(3000, () => console.log('Example app listening on port 3000!'))
