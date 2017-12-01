@@ -77,6 +77,8 @@ module.exports = Neo4jClient = (driver) => {
             })
           })
 
+          return primaryProfessions
+
           const relatedProfessions = []
           result.records.forEach(record => {
             record.get('relatedProfessions').map(element => {
@@ -93,14 +95,51 @@ module.exports = Neo4jClient = (driver) => {
           session.close()
         })
     },
+
+    'searchProfessions2': (query) => {
+      return new Promise((resolve, reject) => {
+        const session = driver.session()
+      
+        const primaryProfessions = new Set()
+        const relatedProfessions = new Set()
+
+        session
+          .run(`
+            MATCH (p:Profession)
+            OPTIONAL MATCH (p)-[:HAS_A]-()-[:HAS_A]-(p2)
+            WHERE toLower(p.name) CONTAINS toLower('${query}')
+            RETURN p.id AS pid, p2, count(p2) AS count ORDER BY count DESC LIMIT 10
+          `)
+          .subscribe({
+            onNext: (record) => {
+              primaryProfessions.add(record.get('pid').toNumber())
+              relatedProfessions.add({
+                id: record.get('p2').properties.id.toNumber(),
+                count: record.get('count'),
+              })
+            },
+            onCompleted: () => {
+              session.close();
+              resolve({
+                primaryProfessions: Array.from(primaryProfessions),
+                relatedProfessions
+              })
+            },
+            onError: (error) => {
+              reject(error)
+            }
+          })
+      })
+    },
+
     'getUsersByProfession': (profession) => {
       const session = driver.session()
 
       return session
         .run(`
-        MATCH (u:User)-[:HAS_A]->(p)
-        WHERE toLower(p.name) CONTAINS toLower('${profession}')
-        RETURN u LIMIT 50
+          MATCH (u:User)-[:HAS_A]->(p)
+          WHERE toLower(p.name) CONTAINS toLower('${profession}')
+          RETURN u LIMIT 50
         `)
         .then((result) => {
           const ids = []
