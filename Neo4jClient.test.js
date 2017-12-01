@@ -21,3 +21,8 @@ test('related professions', async () => {
   //graphic designer: 70944
   await expect(Neo4jClient.getRelatedProfessions(70944)).resolves.toBeDefined()
 })
+
+test('rp', async () => {
+  //graphic designer: 70944
+  await expect(Neo4jClient.getRP([70944, 70931])).resolves.toBeDefined()
+})

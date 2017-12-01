@@ -70,15 +70,25 @@ module.exports = ElasticsearchClient = (client) => {
       return search(searchOptions)
     },
 
-    'searchUsersByProfessions': (ids) => {
-      const queries = ids.map((id) => {
+    'searchUsersByProfessions': (ids, relatedProfessionsIds) => {
+      const query1 = ids.map((id) => {
+        return {
+          match: {
+            professionIds: {
+              query: id
+              // fuzziness: 'AUTO',
+              // operator: 'and',
+            }
+          }
+        }
+      })
+
+      const query2 = relatedProfessionsIds.map((id) => {
         return {
           match: {
             professionIds: {
               query: id,
-              // fuzziness: 'AUTO',
-              // operator: 'and',
-              // boost: 2
+              boost: 0.25
             }
           }
         }
@@ -98,7 +108,7 @@ module.exports = ElasticsearchClient = (client) => {
         body: {
           query: {
             bool: {
-              should: queries
+              should: query1.concat(query2)
             }
           }
         }
