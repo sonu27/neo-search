@@ -33,7 +33,9 @@ app.get('/professions', async function (req, res) {
 
 app.get('/users', async function (req, res) {
   const professions = req.query.professions.split(',').map(Number)
-  const data = await EsClient.searchUsersByProfessions(professions)
+  const related = (await Neo4jClient.getRP(professions)).map(p => p.id)
+
+  const data = await EsClient.searchUsersByProfessions(professions, related)
   const result = data.map(u => u._source)
 
   res.json({users: result})
