@@ -11,7 +11,6 @@ module.exports = ElasticsearchClient = (client) => {
           console.log(error)
           reject(error)
         }
-        console.log(response)
         resolve(response.hits.hits)
       })
     })
@@ -70,7 +69,7 @@ module.exports = ElasticsearchClient = (client) => {
       return search(searchOptions)
     },
 
-    'searchUsersByProfessions': (ids, relatedProfessionsIds) => {
+    'searchUsersByProfessions': (ids, relatedIdsWithCounts) => {
       const query1 = ids.map((id) => {
         return {
           match: {
@@ -83,12 +82,16 @@ module.exports = ElasticsearchClient = (client) => {
         }
       })
 
-      const query2 = relatedProfessionsIds.map((id) => {
+      const totalCount = relatedIdsWithCounts.reduce((a, v) => a + v.count, 0)
+
+      const query2 = relatedIdsWithCounts.map(o => {
+        const boost = (o.count / totalCount)
+        console.log(boost)
         return {
           match: {
             professionIds: {
-              query: id,
-              boost: 0.25
+              query: o.id,
+              boost: boost
             }
           }
         }

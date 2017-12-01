@@ -2,7 +2,7 @@ const c = require('./config')
 
 module.exports = Neo4jClient = (driver) => {
   return {
-    'getRP': (ids) => {
+    'getRelatedProfessionsWithCounts': (ids) => {
       return new Promise((resolve, reject) => {
         const session = driver.session()
 
@@ -31,7 +31,6 @@ module.exports = Neo4jClient = (driver) => {
       })
     },
 
-
     'getRelatedProfessions': (id) => {
       const session = driver.session()
 
@@ -58,6 +57,7 @@ module.exports = Neo4jClient = (driver) => {
           session.close()
         })
     },
+
     'searchProfessions': (query) => {
       const session = driver.session()
 
