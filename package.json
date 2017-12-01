@@ -1,4 +1,7 @@
 {
+  "name": "search.next",
+  "version": "0.1",
+  "license": "UNLICENSED",
   "dependencies": {
     "bodybuilder": "^2.2.6",
     "cors": "^2.8.4",
