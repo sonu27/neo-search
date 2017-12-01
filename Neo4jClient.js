@@ -2,6 +2,36 @@ const c = require('./config')
 
 module.exports = Neo4jClient = (driver) => {
   return {
+    'getRP': (ids) => {
+      return new Promise((resolve, reject) => {
+        const session = driver.session()
+
+        session
+          .run(`
+            MATCH (p:Profession)<-[:HAS_A]-()-[:HAS_A]->(p2)
+            WHERE p.id IN [${ids.toString()}]
+            RETURN p2.id AS professionsId, count(p2) AS count ORDER BY count DESC LIMIT ${ids.length * 10}
+          `)
+          .then((result) => {
+            const ids = []
+            result.records.forEach(record => {
+              ids.push({
+                id: record.get('professionsId').toNumber(),
+                count: record.get('count').toNumber(),
+              })
+            })
+
+            session.close()
+            resolve(ids)
+          })
+          .catch((error) => {
+            session.close()
+            reject(error)
+          })
+      })
+    },
+
+
     'getRelatedProfessions': (id) => {
       const session = driver.session()
 
