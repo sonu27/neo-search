@@ -21,7 +21,12 @@ app.get('/professions/:id/related', function (req, res) {
 })
 
 app.get('/professions', async function (req, res) {
-  const data = await EsClient.searchProfessions(req.query.name, [])
+  let exclude = []
+  if (req.query.exclude !== undefined) {
+    exclude = req.query.exclude.split(',').map(Number)
+  }
+
+  const data = await EsClient.searchProfessions(req.query.name, exclude)
   
   res.send({professions: data})
 })
