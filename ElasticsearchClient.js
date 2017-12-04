@@ -11,7 +11,7 @@ module.exports = ElasticsearchClient = (client) => {
           console.log(error)
           reject(error)
         }
-        resolve(response.hits.hits)
+        resolve(response)
       })
     })
   }
@@ -112,6 +112,15 @@ module.exports = ElasticsearchClient = (client) => {
           query: {
             bool: {
               should: query1.concat(query2)
+            }
+          },
+          aggs: {
+            professions: {
+              terms: {
+                size: 10,
+                exclude: ids,
+                field: 'professionIds'
+              }
             }
           }
         }
