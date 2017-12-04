@@ -28,7 +28,7 @@ app.get('/professions', async function (req, res) {
 
   const data = await EsClient.searchProfessions(req.query.name, exclude)
   
-  res.send({professions: data})
+  res.send({professions: data.hits.hits})
 })
 
 app.get('/users', async function (req, res) {
@@ -36,9 +36,17 @@ app.get('/users', async function (req, res) {
   const related = await Neo4jClient.getRelatedProfessionsWithCounts(professions)
 
   const data = await EsClient.searchUsersByProfessions(professions, related)
-  const result = data.map(u => u._source)
 
-  res.json({users: result})
+  const result = data.hits.hits.map(u => {
+    u._source.score = u._score
+
+    return u._source
+  })
+
+  res.json({
+    users: result,
+    aggs: data.aggregations.professions.buckets
+  })
 })
 
 app.listen(3000, () => console.log('Example app listening on port 3000!'))
