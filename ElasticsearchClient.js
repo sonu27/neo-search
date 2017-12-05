@@ -115,13 +115,18 @@ module.exports = ElasticsearchClient = (client) => {
             }
           },
           aggs: {
-            professions: {
+            professionIds: {
               terms: {
                 size: 10,
-                exclude: ids,
                 field: 'professionIds'
               }
-            }
+            },
+            professionNames: {
+              terms: {
+                size: 10,
+                field: 'professions.keyword'
+              }
+            },
           }
         }
       }
