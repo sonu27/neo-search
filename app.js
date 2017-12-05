@@ -1,4 +1,5 @@
 const c = require('./config')
+const _ = require('lodash')
 const express = require('express')
 const app = express()
 const cors = require('cors')
@@ -43,9 +44,14 @@ app.get('/users', async function (req, res) {
     return u._source
   })
 
+  const aggregations = _.zip(
+    data.aggregations.professionIds.buckets.map(x => x.key),
+    data.aggregations.professionNames.buckets.map(x => x.key),
+  )
+
   res.json({
     users: result,
-    aggs: data.aggregations.professions.buckets
+    aggs: aggregations
   })
 })
 
