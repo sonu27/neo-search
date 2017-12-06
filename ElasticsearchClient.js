@@ -132,6 +132,63 @@ module.exports = ElasticsearchClient = (client) => {
       }
 
       return search(searchOptions)
-    }
+    },
+
+    'searchUsersByProfessions2': (query, professionIds) => {
+      const query1 = [{
+        match: {
+          professions: {
+            query: query
+          }
+        }
+      }]
+      
+      const query2 = professionIds.map((id) => {
+        return {
+          match: {
+            professionIds: {
+              query: id
+            }
+          }
+        }
+      })
+
+      const searchOptions = {
+        index: userIndex,
+        from: 0,
+        size: 100,
+        _sourceInclude: [
+          'id',
+          'firstName',
+          'lastName',
+          'level',
+          'professions',
+        ],
+        body: {
+          query: {
+            bool: {
+              should: query1,
+              must: query2
+            }
+          },
+          aggs: {
+            professionIds: {
+              terms: {
+                size: 10,
+                field: 'professionIds'
+              }
+            },
+            professionNames: {
+              terms: {
+                size: 10,
+                field: 'professions.keyword'
+              }
+            },
+          }
+        }
+      }
+
+      return search(searchOptions)
+    },
   }
 }

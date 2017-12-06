@@ -55,4 +55,31 @@ app.get('/users', async function (req, res) {
   })
 })
 
+app.get('/users2', async function (req, res) {
+  const query = req.query.query
+
+  let professions = []
+  if (req.query.professions !== '') {
+    const professions = req.query.professions.split(',').map(Number)
+  }
+
+  const data = await EsClient.searchUsersByProfessions2(query, professions)
+
+  const result = data.hits.hits.map(u => {
+    u._source.score = u._score
+
+    return u._source
+  })
+
+  const aggregations = _.zip(
+    data.aggregations.professionIds.buckets.map(x => x.key),
+    data.aggregations.professionNames.buckets.map(x => x.key),
+  )
+
+  res.json({
+    users: result,
+    aggs: aggregations
+  })
+})
+
 app.listen(3000, () => console.log('Example app listening on port 3000!'))
