@@ -60,7 +60,7 @@ app.get('/users2', async function (req, res) {
 
   let professions = []
   if (req.query.professions !== '') {
-    const professions = req.query.professions.split(',').map(Number)
+    professions = req.query.professions.split(',').map(Number)
   }
 
   const data = await EsClient.searchUsersByProfessions2(query, professions)
