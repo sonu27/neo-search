@@ -59,8 +59,12 @@ app.get('/users2', async function (req, res) {
   const query = req.query.query
 
   let professions = []
+  let related = []
+
   if (req.query.professions !== '') {
     professions = req.query.professions.split(',').map(Number)
+
+    related = await Neo4jClient.getRelatedProfessionsWithCounts(professions)
   }
 
   const data = await EsClient.searchUsersByProfessions2(query, professions)
@@ -78,7 +82,8 @@ app.get('/users2', async function (req, res) {
 
   res.json({
     users: result,
-    aggs: aggregations
+    aggs: aggregations,
+    related: related,
   })
 })
 
