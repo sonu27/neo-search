@@ -1,4 +1,5 @@
 const c = require('./config')
+const RecordTransformer = require('./RecordTransformer')
 
 module.exports = Neo4jClient = (driver) => {
   return {
@@ -159,6 +160,42 @@ module.exports = Neo4jClient = (driver) => {
           console.error(error)
           session.close()
         })
+    },
+
+    'getUser': (id) => {
+      const session = driver.session()
+
+      return new Promise((resolve, reject) => {
+        session
+          .run(`
+            MATCH (u:User {id: ${id}})
+            OPTIONAL MATCH (u)-[:FOLLOWS]->(u1)
+            OPTIONAL MATCH (u)-[:HAS_A]->(p)
+            RETURN
+              u.id AS id,
+              u.firstName AS firstName,
+              u.lastName AS lastName,
+              u.level AS level,
+              u.createdAt AS createdAt,
+              collect(DISTINCT u1.id) AS usersFollowing,
+              collect(DISTINCT p.id) AS professionIds,
+              collect(DISTINCT p.name) AS professions
+          `)
+          .subscribe({
+            onNext: function (record) {
+              let user = RecordTransformer().toObject(record)
+              resolve(user)
+            },
+            onCompleted: function () {
+              session.close()
+            },
+            onError: function (error) {
+              console.log(error)
+              session.close()
+              reject(error)
+            }
+          })
+      })
     }
   }
 }
