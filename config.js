@@ -8,4 +8,5 @@ module.exports = {
   'ES_PORT': 9200,
   'ES_INDEX_USER': 'search',
   'ES_INDEX_PROFESSION': 'profession',
+  'ES_INDEX_SKILL': 'skill',
 }
