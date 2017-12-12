@@ -2,6 +2,7 @@ const c = require('./config')
 
 const userIndex = c.ES_INDEX_USER
 const professionIndex = c.ES_INDEX_PROFESSION
+const skillIndex = c.ES_INDEX_SKILL
 
 module.exports = ElasticsearchClient = (client) => {
   const search = (searchOptions) => {
@@ -36,6 +37,15 @@ module.exports = ElasticsearchClient = (client) => {
         type: 'profession',
         id: profession.id,
         body: profession
+      })
+    },
+
+    'createSkill': (skill) => {
+      return create({
+        index: skillIndex,
+        type: 'skill',
+        id: skill.id,
+        body: skill
       })
     },
 
@@ -107,6 +117,7 @@ module.exports = ElasticsearchClient = (client) => {
           'lastName',
           'level',
           'professions',
+          'skills',
         ],
         body: {
           query: {
@@ -134,14 +145,23 @@ module.exports = ElasticsearchClient = (client) => {
       return search(searchOptions)
     },
 
-    'searchUsersByProfessions2': (query, professionIds) => {
-      const query1 = [{
-        match: {
-          professions: {
-            query: query
+    'searchUsers3': (query, professionIds) => {
+      const query1 = [
+        {
+          match: {
+            professions: {
+              query: query
+            }
           }
-        }
-      }]
+        },
+        {
+          match: {
+            skills: {
+              query: query
+            }
+          }
+        },
+      ]
       
       const query2 = professionIds.map((id) => {
         return {
@@ -163,6 +183,7 @@ module.exports = ElasticsearchClient = (client) => {
           'lastName',
           'level',
           'professions',
+          'skills',
         ],
         body: {
           query: {

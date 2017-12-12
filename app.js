@@ -67,7 +67,7 @@ app.get('/users2', async function (req, res) {
     related = await Neo4jClient.getRelatedProfessionsWithCounts(professions)
   }
 
-  const data = await EsClient.searchUsersByProfessions2(query, professions)
+  const data = await EsClient.searchUsers3(query, professions)
 
   const result = data.hits.hits.map(u => {
     u._source.score = u._score

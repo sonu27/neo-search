@@ -18,6 +18,8 @@ module.exports = RecordTransformer = () => {
         'usersFollowing': arrayToNumbers(record.get('usersFollowing')),
         'professionIds': arrayToNumbers(record.get('professionIds')),
         'professions': record.get('professions'),
+        'skillIds': arrayToNumbers(record.get('skillIds')),
+        'skills': record.get('skills'),
       }
 
       return user
