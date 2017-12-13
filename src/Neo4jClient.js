@@ -9,7 +9,7 @@ module.exports = Neo4jClient = (driver) => {
 
         session
           .run(`
-            MATCH (p:Profession)<-[:HAS_A]-()-[:HAS_A]->(p2)
+            MATCH (p:Profession)<-[:HAS_PROFESSION]-()-[:HAS_PROFESSION]->(p2)
             WHERE p.id IN [${ids.toString()}]
             RETURN p2.id AS professionId, p2.name AS professionName, count(p2) AS count ORDER BY count DESC LIMIT ${ids.length * 10}
           `)
@@ -38,7 +38,7 @@ module.exports = Neo4jClient = (driver) => {
 
       return session
         .run(`
-          MATCH (p:Profession {id: ${parseInt(id)}})<-[:HAS_A]-()-[:HAS_A]->(p2)
+          MATCH (p:Profession {id: ${parseInt(id)}})<-[:HAS_PROFESSION]-()-[:HAS_PROFESSION]->(p2)
           WITH p2, count(p2) AS count ORDER BY count DESC LIMIT 10
           RETURN collect(p2.id) AS professionsIds
         `)
@@ -66,7 +66,7 @@ module.exports = Neo4jClient = (driver) => {
       return session
         .run(`
           MATCH (p:Profession)
-          OPTIONAL MATCH (p)-[:HAS_A]-()-[:HAS_A]-(p2)
+          OPTIONAL MATCH (p)-[:HAS_PROFESSION]-()-[:HAS_PROFESSION]-(p2)
           WHERE toLower(p.name) CONTAINS toLower('${query}')
           WITH p, p2, count(p2) AS count ORDER BY count DESC LIMIT 10
           RETURN collect(distinct p.id) AS primaryProfessions, collect(distinct p2.id) AS relatedProfessions
@@ -108,7 +108,7 @@ module.exports = Neo4jClient = (driver) => {
         session
           .run(`
             MATCH (p:Profession)
-            OPTIONAL MATCH (p)-[:HAS_A]-()-[:HAS_A]-(p2)
+            OPTIONAL MATCH (p)-[:HAS_PROFESSION]-()-[:HAS_PROFESSION]-(p2)
             WHERE toLower(p.name) CONTAINS toLower('${query}')
             RETURN p.id AS pid, p2, count(p2) AS count ORDER BY count DESC LIMIT 10
           `)
@@ -139,7 +139,7 @@ module.exports = Neo4jClient = (driver) => {
 
       return session
         .run(`
-          MATCH (u:User)-[:HAS_A]->(p)
+          MATCH (u:User)-[:HAS_PROFESSION]->(p)
           WHERE toLower(p.name) CONTAINS toLower('${profession}')
           RETURN u LIMIT 50
         `)
@@ -170,13 +170,19 @@ module.exports = Neo4jClient = (driver) => {
           .run(`
             MATCH (u:User {id: ${id}})
             OPTIONAL MATCH (u)-[:FOLLOWS]->(u1)
-            OPTIONAL MATCH (u)-[:HAS_A]->(p)
+            OPTIONAL MATCH (u)-[:HAS_PROFESSION]->(p)
             OPTIONAL MATCH (u)-[:HAS_SKILL]->(s)
             RETURN
               u.id AS id,
               u.firstName AS firstName,
               u.lastName AS lastName,
               u.level AS level,
+              u.locationLatitude AS locationLatitude,
+              u.locationLongitude AS locationLongitude,
+              u.locationName AS locationName,
+              u.profileImage AS profileImage,
+              u.searchScore AS searchScore,
+              u.tagline AS tagline,
               u.createdAt AS createdAt,
               collect(DISTINCT u1.id) AS usersFollowing,
               collect(DISTINCT p.id) AS professionIds,
