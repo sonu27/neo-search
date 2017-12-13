@@ -5,6 +5,21 @@ const professionIndex = c.ES_INDEX_PROFESSION
 const skillIndex = c.ES_INDEX_SKILL
 
 module.exports = ElasticsearchClient = (client) => {
+  const userFields = [
+    'id',
+    'firstName',
+    'lastName',
+    'level',
+    'locationLatitude',
+    'locationLongitude',
+    'locationName',
+    'profileImage',
+    'searchScore',
+    'tagline',
+    'professions',
+    'skills',
+  ]
+
   const search = (searchOptions) => {
     return new Promise((resolve, reject) => {
       client.search(searchOptions, (error, response) => {
@@ -111,14 +126,7 @@ module.exports = ElasticsearchClient = (client) => {
         index: userIndex,
         from: 0,
         size: 100,
-        _sourceInclude: [
-          'id',
-          'firstName',
-          'lastName',
-          'level',
-          'professions',
-          'skills',
-        ],
+        _sourceInclude: userFields,
         body: {
           query: {
             bool: {
@@ -177,14 +185,7 @@ module.exports = ElasticsearchClient = (client) => {
         index: userIndex,
         from: 0,
         size: 100,
-        _sourceInclude: [
-          'id',
-          'firstName',
-          'lastName',
-          'level',
-          'professions',
-          'skills',
-        ],
+        _sourceInclude: userFields,
         body: {
           query: {
             bool: {
