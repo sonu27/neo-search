@@ -1,4 +1,4 @@
-const c = require('./config')
+const c = require('../config')
 
 const userIndex = c.ES_INDEX_USER
 const professionIndex = c.ES_INDEX_PROFESSION

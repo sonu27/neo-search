@@ -1,11 +1,10 @@
-const c = require('./config')
-const fs = require('fs')
+const c = require('../config')
 const neo4j = require('neo4j-driver').v1
 const driver = neo4j.driver(`bolt://${c.NEO4J_HOST}`, neo4j.auth.basic(c.NEO4J_USER, c.NEO4J_PASS))
 
 const elasticsearch = require('elasticsearch')
 const esConfig = {host: `${c.ES_HOST}:${c.ES_PORT}`}
-const EsClient = require('./ElasticsearchClient')(new elasticsearch.Client(esConfig))
+const EsClient = require('../src/ElasticsearchClient')(new elasticsearch.Client(esConfig))
 
 const session = driver.session()
 let count = 0
