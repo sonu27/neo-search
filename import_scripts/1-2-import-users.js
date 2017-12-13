@@ -12,7 +12,13 @@ session
         id: toInteger(row.id),
         firstName: trim(row.firstName),
         lastName: trim(row.lastName),
-        level: toInteger(row.levelid),
+        level: toInteger(row.level),
+        searchScore: toInteger(row.searchScore),
+        tagline: trim(row.tagline),
+        profileImage: trim(row.profileImage),
+        locationName: trim(row.locationName),
+        locationLatitude: toFloat(row.locationLatitude),
+        locationLongitude: toFloat(row.locationLongitude),
         createdAt: row.createdAt
       }
     )

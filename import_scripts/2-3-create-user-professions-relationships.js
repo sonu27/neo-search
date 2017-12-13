@@ -8,7 +8,7 @@ session
     USING PERIODIC COMMIT
     LOAD CSV WITH HEADERS FROM "file:///user_professions.csv" AS row
     MATCH (u:User {id: toInteger(row.userId)}), (p:Profession {id: toInteger(row.professionId)})
-    CREATE (u)-[r:HAS_A]->(p)
+    CREATE (u)-[r:HAS_PROFESSION]->(p)
   `)
   .then(function () {
     session.close()
