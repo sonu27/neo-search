@@ -1,4 +1,4 @@
-const c = require('./config')
+const c = require('../config')
 const neo4j = require('neo4j-driver').v1
 
 let driver

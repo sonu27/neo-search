@@ -1,4 +1,4 @@
-const c = require('./config')
+const c = require('../config')
 const RecordTransformer = require('./RecordTransformer')
 
 module.exports = Neo4jClient = (driver) => {
