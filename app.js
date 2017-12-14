@@ -1,7 +1,7 @@
 const c = require('./config')
 const _ = require('lodash')
 const express = require('express')
-const app = express()
+const bodyParser = require('body-parser')
 const cors = require('cors')
 
 const neo4j = require('neo4j-driver').v1
@@ -12,7 +12,14 @@ const elasticsearch = require('elasticsearch')
 const esConfig = {host: `${c.ES_HOST}:${c.ES_PORT}`}
 const EsClient = require('./src/ElasticsearchClient')(new elasticsearch.Client(esConfig))
 
+const app = express()
 app.use(cors())
+
+// create application/json parser
+const jsonParser = bodyParser.json()
+
+// create application/x-www-form-urlencoded parser
+const urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 app.get('/professions/:id/related', function (req, res) {
   Neo4jClient.getRelatedProfessions(req.params.id)
@@ -30,6 +37,17 @@ app.get('/professions', async function (req, res) {
   const data = await EsClient.searchProfessions(req.query.name, exclude)
   
   res.send({professions: data.hits.hits})
+})
+
+app.get('/skills', async function (req, res) {
+  let exclude = []
+  if (req.query.exclude !== undefined) {
+    exclude = req.query.exclude.split(',')
+  }
+
+  const data = await EsClient.searchSkills(req.query.name, exclude)
+  
+  res.send({skills: data.hits.hits})
 })
 
 app.get('/users', async function (req, res) {
@@ -67,7 +85,7 @@ app.get('/users2', async function (req, res) {
     related = await Neo4jClient.getRelatedProfessionsWithCounts(professions)
   }
 
-  const data = await EsClient.searchUsers3(query, professions)
+  const data = await EsClient.searchUsers2(query, professions)
 
   const result = data.hits.hits.map(u => {
     u._source.score = u._score
@@ -84,6 +102,29 @@ app.get('/users2', async function (req, res) {
     users: result,
     aggs: aggregations,
     related: related,
+  })
+})
+
+app.post('/users3', jsonParser, async function (req, res) {
+  if (!req.body) return res.sendStatus(400)
+
+  console.log(req.body)
+
+  const data = await EsClient.searchUsers3(req.body.skills)
+
+  const result = data.hits.hits.map(u => {
+    u._source.score = u._score
+
+    return u._source
+  })
+
+  console.log(data.aggregations.skills.buckets)
+
+  res.json({
+    users: result,
+    aggregations: {
+      skills: data.aggregations.skills.buckets.map(i => i.key)
+    },
   })
 })
 

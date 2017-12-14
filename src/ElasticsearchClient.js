@@ -94,6 +94,36 @@ module.exports = ElasticsearchClient = (client) => {
       return search(searchOptions)
     },
 
+    'searchSkills': (query, exclude) => {
+      const exclusions = exclude.map(skill => {
+        return {
+          term: {
+            "name.keyword": skill
+          }
+        }
+      })
+
+      const searchOptions = {
+        index: skillIndex,
+        from: 0,
+        size: 100,
+        body: {
+          query: {
+            bool: {
+              must: {
+                match_phrase_prefix: {
+                  name: `${query}`,
+                }
+              },
+              must_not: exclusions
+            }
+          }
+        }
+      }
+
+      return search(searchOptions)
+    },
+
     'searchUsersByProfessions': (ids, relatedIdsWithCounts) => {
       const query1 = ids.map((id) => {
         return {
@@ -153,7 +183,7 @@ module.exports = ElasticsearchClient = (client) => {
       return search(searchOptions)
     },
 
-    'searchUsers3': (query, professionIds) => {
+    'searchUsers2': (query, professionIds) => {
       const query1 = [
         {
           match: {
@@ -206,11 +236,70 @@ module.exports = ElasticsearchClient = (client) => {
                 field: 'professions.keyword'
               }
             },
+            locations: {
+              terms: {
+                size: 10,
+                field: 'locationName.keyword'
+              }
+            },
           }
         }
       }
 
       return search(searchOptions)
     },
+
+    'searchUsers3': (skills) => {
+      console.log(skills)
+      
+      const query1 = skills.map((skill) => {
+        return {
+          match: {
+            skills: {
+              query: skill
+            }
+          }
+        }
+      })
+
+      const searchOptions = {
+        index: userIndex,
+        from: 0,
+        size: 100,
+        _sourceInclude: userFields,
+        body: {
+          query: {
+            bool: {
+              should: query1,
+              // must: query2
+            }
+          },
+          aggs: {
+            skills: {
+              terms: {
+                field: 'skills.keyword',
+                size: 10,
+              }
+            },
+            professionNames: {
+              terms: {
+                field: 'professions.keyword',
+                size: 10,
+              }
+            },
+            locations: {
+              terms: {
+                field: 'locationName.keyword',
+                size: 10,
+              }
+            },
+          }
+        }
+      }
+      console.log(JSON.stringify(searchOptions))
+
+      return search(searchOptions)
+    },
+    
   }
 }
