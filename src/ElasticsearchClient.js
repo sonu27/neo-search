@@ -249,14 +249,23 @@ module.exports = ElasticsearchClient = (client) => {
       return search(searchOptions)
     },
 
-    'searchUsers3': (skills) => {
-      console.log(skills)
+    'searchUsers3': (skills, professions) => {
       
       const query1 = skills.map((skill) => {
         return {
           match: {
             skills: {
               query: skill
+            }
+          }
+        }
+      })
+
+      const query2 = professions.map((profession) => {
+        return {
+          match: {
+            professions: {
+              query: profession
             }
           }
         }
@@ -270,8 +279,7 @@ module.exports = ElasticsearchClient = (client) => {
         body: {
           query: {
             bool: {
-              should: query1,
-              // must: query2
+              should: query1.concat(query2),
             }
           },
           aggs: {
@@ -279,12 +287,14 @@ module.exports = ElasticsearchClient = (client) => {
               terms: {
                 field: 'skills.keyword',
                 size: 10,
+                exclude: skills,
               }
             },
-            professionNames: {
+            professions: {
               terms: {
                 field: 'professions.keyword',
                 size: 10,
+                exclude: professions,
               }
             },
             locations: {
