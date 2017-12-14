@@ -108,9 +108,7 @@ app.get('/users2', async function (req, res) {
 app.post('/users3', jsonParser, async function (req, res) {
   if (!req.body) return res.sendStatus(400)
 
-  console.log(req.body)
-
-  const data = await EsClient.searchUsers3(req.body.skills)
+  const data = await EsClient.searchUsers3(req.body.skills, req.body.professions)
 
   const result = data.hits.hits.map(u => {
     u._source.score = u._score
@@ -123,7 +121,9 @@ app.post('/users3', jsonParser, async function (req, res) {
   res.json({
     users: result,
     aggregations: {
-      skills: data.aggregations.skills.buckets.map(i => i.key)
+      skills: data.aggregations.skills.buckets.map(i => i.key),
+      professions: data.aggregations.professions.buckets.map(i => i.key),
+      locations: data.aggregations.locations.buckets.map(i => i.key),
     },
   })
 })
