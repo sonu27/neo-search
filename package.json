@@ -3,7 +3,7 @@
   "version": "0.1",
   "license": "UNLICENSED",
   "dependencies": {
-    "bodybuilder": "^2.2.6",
+    "body-parser": "^1.18.2",
     "cors": "^2.8.4",
     "elasticsearch": "^14.0.0",
     "express": "^4.16.2",
