@@ -280,7 +280,7 @@ module.exports = ElasticsearchClient = (client) => {
         body: {
           query: {
             bool: {
-              should: query1.concat(query2),
+              must: query1.concat(query2),
             }
           },
           aggs: {
