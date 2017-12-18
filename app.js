@@ -50,6 +50,14 @@ app.get('/skills', async function (req, res) {
   res.send({skills: data.hits.hits})
 })
 
+app.post('/skills/related', jsonParser, async function (req, res) {
+  if (!req.body) return res.sendStatus(400)
+
+  const relatedSkills = await Neo4jClient.getRelatedSkillsWithCounts(req.body.skills)
+  
+  res.send({ relatedSkills: relatedSkills })
+})
+
 app.get('/users', async function (req, res) {
   const professions = req.query.professions.split(',').map(Number)
   const related = await Neo4jClient.getRelatedProfessionsWithCounts(professions)
@@ -115,8 +123,6 @@ app.post('/users3', jsonParser, async function (req, res) {
 
     return u._source
   })
-
-  console.log(data.aggregations.skills.buckets)
 
   res.json({
     users: result,

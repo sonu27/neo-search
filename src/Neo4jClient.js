@@ -3,6 +3,39 @@ const RecordTransformer = require('./RecordTransformer')
 
 module.exports = Neo4jClient = (driver) => {
   return {
+    'getRelatedSkillsWithCounts': (skills) => {
+      return new Promise((resolve, reject) => {
+        const session = driver.session()
+
+        session
+          .run(`
+            MATCH (s:Skill)<-[:HAS_SKILL]-()-[:HAS_SKILL]->(s2)
+            WHERE s.name IN ['${skills.join("','")}']
+            WITH s2.id AS skillId, s2.name AS skillName, count(s2) AS count
+            WHERE count > 2
+            RETURN skillId, skillName, count
+            ORDER BY count DESC LIMIT ${skills.length * 10}
+          `)
+          .then((result) => {
+            const ids = []
+            result.records.forEach(record => {
+              ids.push({
+                id: record.get('skillId').toNumber(),
+                name: record.get('skillName'),
+                count: record.get('count').toNumber(),
+              })
+            })
+
+            session.close()
+            resolve(ids)
+          })
+          .catch((error) => {
+            session.close()
+            reject(error)
+          })
+      })
+    },
+
     'getRelatedProfessionsWithCounts': (ids) => {
       return new Promise((resolve, reject) => {
         const session = driver.session()
