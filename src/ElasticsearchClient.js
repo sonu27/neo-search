@@ -1,4 +1,5 @@
 const c = require('../config')
+const _ = require('lodash')
 
 const userIndex = c.ES_INDEX_USER
 const professionIndex = c.ES_INDEX_PROFESSION
@@ -249,7 +250,7 @@ module.exports = ElasticsearchClient = (client) => {
       return search(searchOptions)
     },
 
-    'searchUsers3': (skills, professions) => {
+    'searchUsers3': (skills, professions, levels) => {
       
       const query1 = skills.map((skill) => {
         return {
@@ -303,9 +304,24 @@ module.exports = ElasticsearchClient = (client) => {
                 size: 10,
               }
             },
+            levels: {
+              terms: {
+                field: 'level',
+                size: 5,
+              }
+            },
           }
         }
       }
+
+      if (_.isArray(levels) && !_.isEmpty(levels)) {
+        searchOptions.body.query.bool.filter = {
+          terms: {
+            level: levels, 
+          }
+        }
+      }
+      
       console.log(JSON.stringify(searchOptions))
 
       return search(searchOptions)
