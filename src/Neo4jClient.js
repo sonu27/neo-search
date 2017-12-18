@@ -14,7 +14,7 @@ module.exports = Neo4jClient = (driver) => {
             WITH s2.id AS skillId, s2.name AS skillName, count(s2) AS count
             WHERE count > 2
             RETURN skillId, skillName, count
-            ORDER BY count DESC LIMIT ${skills.length * 10}
+            ORDER BY count DESC LIMIT 10
           `)
           .then((result) => {
             const ids = []
@@ -44,7 +44,8 @@ module.exports = Neo4jClient = (driver) => {
           .run(`
             MATCH (p:Profession)<-[:HAS_PROFESSION]-()-[:HAS_PROFESSION]->(p2)
             WHERE p.id IN [${ids.toString()}]
-            RETURN p2.id AS professionId, p2.name AS professionName, count(p2) AS count ORDER BY count DESC LIMIT ${ids.length * 10}
+            RETURN p2.id AS professionId, p2.name AS professionName, count(p2) AS count
+            ORDER BY count DESC LIMIT 10
           `)
           .then((result) => {
             const ids = []
