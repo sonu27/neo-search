@@ -26,3 +26,7 @@ test('getRelatedProfessionsWithCounts', async () => {
   //graphic designer: 70944
   await expect(Neo4jClient.getRelatedProfessionsWithCounts([70944, 70931])).resolves.toBeDefined()
 })
+
+test('getRelatedSkillsWithCounts', async () => {
+  await expect(Neo4jClient.getRelatedSkillsWithCounts(['Art', 'Design'])).resolves.toBeDefined()
+})
