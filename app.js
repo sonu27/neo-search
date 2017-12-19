@@ -15,11 +15,21 @@ const EsClient = require('./src/ElasticsearchClient')(new elasticsearch.Client(e
 const app = express()
 app.use(cors())
 
-// create application/json parser
 const jsonParser = bodyParser.json()
 
 // create application/x-www-form-urlencoded parser
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
+
+const paginationCreator = (req) => {
+  const size = 50
+  const page = req.query.page
+  const from = (page * size) - size
+
+  return {
+    from: from,
+    size: size,
+  }
+}
 
 app.get('/professions/:id/related', function (req, res) {
   Neo4jClient.getRelatedProfessions(req.params.id)
@@ -116,7 +126,12 @@ app.get('/users2', async function (req, res) {
 app.post('/users3', jsonParser, async function (req, res) {
   if (!req.body) return res.sendStatus(400)
 
-  const data = await EsClient.searchUsers3(req.body.skills, req.body.professions, req.body.levels)
+  const data = await EsClient.searchUsers3(
+    req.body.skills,
+    req.body.professions,
+    req.body.levels,
+    paginationCreator(req)
+  )
 
   const result = data.hits.hits.map(u => {
     u._source.score = u._score
