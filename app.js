@@ -20,7 +20,7 @@ const jsonParser = bodyParser.json()
 // create application/x-www-form-urlencoded parser
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-const paginationCreator = (req) => {
+const esPaginationCreator = (req) => {
   const size = 50
   const page = req.query.page
   const from = (page * size) - size
@@ -130,7 +130,7 @@ app.post('/users3', jsonParser, async function (req, res) {
     req.body.skills,
     req.body.professions,
     req.body.levels,
-    paginationCreator(req)
+    esPaginationCreator(req)
   )
 
   const result = data.hits.hits.map(u => {
@@ -140,6 +140,7 @@ app.post('/users3', jsonParser, async function (req, res) {
   })
 
   res.json({
+    total: data.hits.total,
     users: result,
     aggregations: {
       skills: data.aggregations.skills.buckets.map(i => i.key),
