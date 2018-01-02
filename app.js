@@ -151,4 +151,27 @@ app.post('/users3', jsonParser, async function (req, res) {
   })
 })
 
+app.post('/users4', jsonParser, async function (req, res) {
+  if (!req.body) return res.sendStatus(400)
+
+  const data = await EsClient.searchUsersForJob(
+    req.body.skills,
+    req.body.professions,
+    req.body.levels,
+    req.body.availabilities,
+    esPaginationCreator(req)
+  )
+
+  const results = data.hits.hits.map(u => {
+    u._source.score = u._score
+
+    return u._source
+  })
+
+  res.json({
+    total: data.hits.total,
+    users: results,
+  })
+})
+
 app.listen(3000, () => console.log('Example app listening on port 3000!'))

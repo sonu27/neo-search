@@ -16,6 +16,9 @@ module.exports = ElasticsearchClient = (client) => {
     'locationName',
     'profileImage',
     'searchScore',
+    'availableForFullTime',
+    'availableForFreelance',
+    'availableForInternships',
     'tagline',
     'professions',
     'skills',
@@ -330,6 +333,68 @@ module.exports = ElasticsearchClient = (client) => {
       if (_.isArray(levels) && !_.isEmpty(levels)) {
         filters.push({
           terms: { level: levels }
+        })
+      }
+
+      if (_.isArray(filters) && !_.isEmpty(filters)) {
+        searchOptions.body.query.bool.filter = filters
+      }
+
+      console.log(JSON.stringify(searchOptions))
+
+      return search(searchOptions)
+    },
+
+    'searchUsersForJob': (skills, professions, levels, availabilities, pagination) => {
+
+      const query1 = skills.map((skill) => {
+        return {
+          match: {
+            skills: {
+              query: skill
+            }
+          }
+        }
+      })
+
+      const query2 = professions.map((profession) => {
+        return {
+          match: {
+            professions: {
+              query: profession
+            }
+          }
+        }
+      })
+
+      const searchOptions = {
+        index: userIndex,
+        from: pagination.from,
+        size: pagination.size,
+        _sourceInclude: userFields,
+        body: {
+          query: {
+            bool: {
+              should: query1.concat(query2),
+            }
+          },
+          sort: sort,
+        }
+      }
+
+      const filters = []
+
+      if (_.isArray(levels) && !_.isEmpty(levels)) {
+        filters.push({
+          terms: { level: levels }
+        })
+      }
+
+      if (_.isArray(availabilities) && !_.isEmpty(availabilities)) {
+        const a = availabilities.map(v => {
+          filters.push({
+            terms: { [v]: [1] }
+          })
         })
       }
 
