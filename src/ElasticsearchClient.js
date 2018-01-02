@@ -210,7 +210,7 @@ module.exports = ElasticsearchClient = (client) => {
           }
         },
       ]
-      
+
       const query2 = professionIds.map((id) => {
         return {
           match: {
@@ -261,7 +261,7 @@ module.exports = ElasticsearchClient = (client) => {
     },
 
     'searchUsers3': (skills, professions, levels, pagination) => {
-      
+
       const query1 = skills.map((skill) => {
         return {
           match: {
@@ -336,11 +336,11 @@ module.exports = ElasticsearchClient = (client) => {
       if (_.isArray(filters) && !_.isEmpty(filters)) {
         searchOptions.body.query.bool.filter = filters
       }
-      
+
       console.log(JSON.stringify(searchOptions))
 
       return search(searchOptions)
     },
-    
+
   }
 }
