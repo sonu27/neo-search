@@ -74,7 +74,7 @@ app.get('/users', async function (req, res) {
 
   const data = await EsClient.searchUsersByProfessions(professions, related)
 
-  const result = data.hits.hits.map(u => {
+  const results = data.hits.hits.map(u => {
     u._source.score = u._score
 
     return u._source
@@ -86,7 +86,7 @@ app.get('/users', async function (req, res) {
   )
 
   res.json({
-    users: result,
+    users: results,
     aggs: aggregations
   })
 })
@@ -105,7 +105,7 @@ app.get('/users2', async function (req, res) {
 
   const data = await EsClient.searchUsers2(query, professions)
 
-  const result = data.hits.hits.map(u => {
+  const results = data.hits.hits.map(u => {
     u._source.score = u._score
 
     return u._source
@@ -117,7 +117,7 @@ app.get('/users2', async function (req, res) {
   )
 
   res.json({
-    users: result,
+    users: results,
     aggs: aggregations,
     related: related,
   })
@@ -133,7 +133,7 @@ app.post('/users3', jsonParser, async function (req, res) {
     esPaginationCreator(req)
   )
 
-  const result = data.hits.hits.map(u => {
+  const results = data.hits.hits.map(u => {
     u._source.score = u._score
 
     return u._source
@@ -141,7 +141,7 @@ app.post('/users3', jsonParser, async function (req, res) {
 
   res.json({
     total: data.hits.total,
-    users: result,
+    users: results,
     aggregations: {
       skills: data.aggregations.skills.buckets.map(i => i.key),
       professions: data.aggregations.professions.buckets.map(i => i.key),
