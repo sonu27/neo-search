@@ -21,6 +21,14 @@ module.exports = ElasticsearchClient = (client) => {
     'skills',
   ]
 
+  const sort = [
+    '_score',
+    { searchScore : 'desc' },
+    { level : 'desc' },
+    'firstName.keyword',
+    'lastName.keyword',
+  ]
+
   const search = (searchOptions) => {
     return new Promise((resolve, reject) => {
       client.search(searchOptions, (error, response) => {
@@ -177,7 +185,8 @@ module.exports = ElasticsearchClient = (client) => {
                 field: 'professions.keyword'
               }
             },
-          }
+          },
+          sort: sort,
         }
       }
 
@@ -243,7 +252,8 @@ module.exports = ElasticsearchClient = (client) => {
                 field: 'locationName.keyword'
               }
             },
-          }
+          },
+          sort: sort,
         }
       }
 
@@ -310,7 +320,8 @@ module.exports = ElasticsearchClient = (client) => {
                 size: 5,
               }
             },
-          }
+          },
+          sort: sort,
         }
       }
 
