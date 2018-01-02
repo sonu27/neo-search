@@ -325,12 +325,16 @@ module.exports = ElasticsearchClient = (client) => {
         }
       }
 
+      const filters = []
+
       if (_.isArray(levels) && !_.isEmpty(levels)) {
-        searchOptions.body.query.bool.filter = {
-          terms: {
-            level: levels, 
-          }
-        }
+        filters.push({
+          terms: { level: levels }
+        })
+      }
+
+      if (_.isArray(filters) && !_.isEmpty(filters)) {
+        searchOptions.body.query.bool.filter = filters
       }
       
       console.log(JSON.stringify(searchOptions))
