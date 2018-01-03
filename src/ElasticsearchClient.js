@@ -77,6 +77,36 @@ module.exports = ElasticsearchClient = (client) => {
     },
 
     'searchProfessions': (query, exclude) => {
+      const exclusions = exclude.map(name => {
+        return {
+          term: {
+            'name.keyword': name
+          }
+        }
+      })
+
+      const searchOptions = {
+        index: professionIndex,
+        from: 0,
+        size: 100,
+        body: {
+          query: {
+            bool: {
+              must: {
+                match_phrase_prefix: {
+                  name: `${query}`,
+                }
+              },
+              must_not: exclusions
+            }
+          }
+        }
+      }
+
+      return search(searchOptions)
+    },
+
+    'searchProfessionsById': (query, exclude) => {
       const exclusions = exclude.map(id => {
         return {
           term: {
