@@ -1,11 +1,10 @@
 {
   "name": "search.next",
-  "version": "0.1",
+  "version": "v1.0.0",
   "license": "UNLICENSED",
   "dependencies": {
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
-    "csv": "^2.0.0",
     "elasticsearch": "^14.0.0",
     "express": "^4.16.2",
     "lodash": "^4.17.4",
