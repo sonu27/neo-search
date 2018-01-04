@@ -35,9 +35,11 @@ session
               esClient.bulk({
                 body: body
               }, function (error, resp) {
-                console.log(error)
+                if (typeof error !== 'undefined') {
+                  console.log(error)
+                }
               })
-              console.log(count)
+              console.log(`ES ${count} users created`)
             }
 
             if (count === total) {
@@ -50,7 +52,7 @@ session
       )
     },
     onCompleted: function () {
-      console.log('all users returned', total)
+      console.log(`ES ${total} users will be created`)
 
       session.close()
     },
