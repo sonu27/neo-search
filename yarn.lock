@@ -333,6 +333,10 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
+bignumber.js@4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-4.0.4.tgz#7c40f5abcd2d6623ab7b99682ee7db81b11889a4"
+
 block-stream@*:
   version "0.0.9"
   resolved "https://registry.yarnpkg.com/block-stream/-/block-stream-0.0.9.tgz#13ebfe778a03205cfe03751481ebb4b3300c126a"
@@ -568,6 +572,29 @@ cssom@0.3.x, "cssom@>= 0.3.2 < 0.4.0":
   resolved "https://registry.yarnpkg.com/cssstyle/-/cssstyle-0.2.37.tgz#541097234cb2513c83ceed3acddc27ff27987d54"
   dependencies:
     cssom "0.3.x"
+
+csv-generate@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/csv-generate/-/csv-generate-2.0.0.tgz#ab4fdc30db5ce678b07d53884c69fa545618b25c"
+
+csv-parse@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/csv-parse/-/csv-parse-2.0.0.tgz#4ea22c973233987f07688c601a2d460234ff56d1"
+
+csv-stringify@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/csv-stringify/-/csv-stringify-2.0.1.tgz#bba2a1e1129818bb3e6712914ec3c84d45a9d8c0"
+  dependencies:
+    lodash.get "~4.4.2"
+
+csv@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/csv/-/csv-2.0.0.tgz#0d51d8fa3ece278b5409f795717fcfcd5ace9b3e"
+  dependencies:
+    csv-generate "^2.0.0"
+    csv-parse "^2.0.0"
+    csv-stringify "^2.0.0"
+    stream-transform "^1.0.0"
 
 dashdash@^1.12.0:
   version "1.14.1"
@@ -1688,7 +1715,7 @@ locate-path@^2.0.0:
     p-locate "^2.0.0"
     path-exists "^3.0.0"
 
-lodash.get@^4.4.2:
+lodash.get@^4.4.2, lodash.get@~4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
 
@@ -1816,6 +1843,15 @@ minimist@~0.0.1:
 ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
+
+mysql@^2.15.0:
+  version "2.15.0"
+  resolved "https://registry.yarnpkg.com/mysql/-/mysql-2.15.0.tgz#ea16841156343e8f2e47fc8985ec41cdd9573b5c"
+  dependencies:
+    bignumber.js "4.0.4"
+    readable-stream "2.3.3"
+    safe-buffer "5.1.1"
+    sqlstring "2.3.0"
 
 nan@^2.3.0:
   version "2.8.0"
@@ -2193,7 +2229,7 @@ read-pkg@^2.0.0:
     normalize-package-data "^2.3.2"
     path-type "^2.0.0"
 
-readable-stream@^2.0.6, readable-stream@^2.1.4:
+readable-stream@2.3.3, readable-stream@^2.0.6, readable-stream@^2.1.4:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.3.tgz#368f2512d79f9d46fdfc71349ae7878bbc1eb95c"
   dependencies:
@@ -2444,6 +2480,10 @@ sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
 
+sqlstring@2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/sqlstring/-/sqlstring-2.3.0.tgz#525b8a4fd26d6f71aa61e822a6caf976d31ad2a8"
+
 sshpk@^1.7.0:
   version "1.13.1"
   resolved "https://registry.yarnpkg.com/sshpk/-/sshpk-1.13.1.tgz#512df6da6287144316dc4c18fe1cf1d940739be3"
@@ -2465,6 +2505,10 @@ sshpk@^1.7.0:
 statuses@~1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-1.3.1.tgz#faf51b9eb74aaef3b3acf4ad5f61abf24cb7b93e"
+
+stream-transform@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/stream-transform/-/stream-transform-1.0.0.tgz#d4ef386913d6ec102052bc75fc0516947a961f10"
 
 string-length@^2.0.0:
   version "2.0.0"
