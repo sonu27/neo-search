@@ -51,7 +51,6 @@ module.exports = ElasticsearchClient = (client) => {
           console.log(error)
           reject(error)
         }
-        console.log(response)
         resolve(response)
       })
     })

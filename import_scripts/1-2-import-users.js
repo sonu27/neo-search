@@ -29,7 +29,7 @@ session
   .then(function () {
     session.close()
     driver.close()
-    console.log('Fully Done')
+    console.log('Neo4j Users created')
   })
   .catch(function (error) {
     console.log(error)

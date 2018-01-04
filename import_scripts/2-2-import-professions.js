@@ -12,7 +12,7 @@ session
   .then(function () {
     session.close()
     driver.close()
-    console.log('Fully Done')
+    console.log('Neo4j Professions created')
   })
   .catch(function (error) {
     console.log(error)
