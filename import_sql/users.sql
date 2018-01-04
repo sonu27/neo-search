@@ -1,16 +1,16 @@
 select
   u.id as id,
-  u.firstName as firstName,
-  u.lastName as lastName,
+  trim(u.firstName) as firstName,
+  trim(u.lastName) as lastName,
   u.levelId as level,
   u.searchScore as searchScore,
   u.availableForFullTime as availableForFullTime,
   u.availableForFreelance as availableForFreelance,
   u.availableForInternships as availableForInternships,
   u.createdAt as createdAt,
-  tb.text as tagline,
+  trim(tb.text) as tagline,
   a.filename as profileImage,
-  l.name as locationName,
+  trim(l.name) as locationName,
   l.latitude as locationLatitude,
   l.longitude as locationLongitude
 from users u
