@@ -135,7 +135,7 @@ module.exports = Neo4jClient = (driver) => {
     'searchProfessions2': (query) => {
       return new Promise((resolve, reject) => {
         const session = driver.session()
-      
+
         const primaryProfessions = new Set()
         const relatedProfessions = new Set()
 
@@ -180,7 +180,6 @@ module.exports = Neo4jClient = (driver) => {
         .then((result) => {
           const ids = []
           result.records.forEach(record => {
-            console.log(record)
             record.get('u').map(element => {
               return ids.push(element.id.toNumber())
             })
