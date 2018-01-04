@@ -9,4 +9,9 @@ module.exports = {
   'ES_INDEX_USER': 'search',
   'ES_INDEX_PROFESSION': 'profession',
   'ES_INDEX_SKILL': 'skill',
+  'MYSQL_HOST': 'mysql-clone',
+  'MYSQL_PORT': 33060,
+  'MYSQL_USER': 'user',
+  'MYSQL_PWD': 'password',
+  'MYSQL_DB': 'the-dots',
 }
