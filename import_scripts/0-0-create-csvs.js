@@ -1,5 +1,5 @@
 const SqlToCsv = require('../src/SqlToCsvCreator')
-const importDir = '../import_data'
+const importDir = './import_data'
 const client = SqlToCsv()
 
 let path = `${importDir}/users.csv`
