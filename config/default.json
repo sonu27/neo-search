@@ -5,7 +5,7 @@
     "pass": ""
   },
   "es": {
-    "host": "http://localhost",
+    "host": "http://elasticsearch",
     "port": 9200,
     "index": {
       "user": "search",
