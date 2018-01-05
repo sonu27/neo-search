@@ -1,0 +1,23 @@
+{
+  "neo4j": {
+    "host": "neo4j",
+    "user": "neo4j",
+    "pass": ""
+  },
+  "es": {
+    "host": "http://localhost",
+    "port": 9200,
+    "index": {
+      "user": "search",
+      "profession": "profession",
+      "skill": "skill"
+    }
+  },
+  "db": {
+    "host": "mysql-clone",
+    "port": 3306,
+    "user": "user",
+    "pass": "password",
+    "database": "the-dots"
+  }
+}
