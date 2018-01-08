@@ -23,7 +23,7 @@ Push:
 DeployTest:
   stage: deploy
   tags: [ docker ]
-  only: [ develop ]
+  only: [ master ]
   image:
     name: dockercloud/cli
     entrypoint: ["/bin/sh", "-c"]
