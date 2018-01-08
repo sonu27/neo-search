@@ -28,4 +28,4 @@ DeployTest:
     name: dockercloud/cli
     entrypoint: ["/bin/sh", "-c"]
   script:
-    - docker-cloud stack redeploy ${DOCKERCLOUD_STACK_TEST}
+    - docker-cloud stack redeploy ${DOCKERCLOUD_STACK}
