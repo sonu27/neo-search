@@ -5,5 +5,9 @@
     "user": "DB_USER",
     "pass": "DB_PASS",
     "database": "DB_DATABASE"
+  },
+  "es": {
+    "host": "ES_HOST",
+    "port": "ES_PORT"
   }
 }
