@@ -431,7 +431,7 @@ module.exports = ElasticsearchClient = (client) => {
 
       if (!isEmptyArray(locations)) {
         filters.push({
-          terms: { location: locations }
+          terms: { locationName: locations }
         })
       }
 
