@@ -170,6 +170,7 @@ app.post('/users4', jsonParser, async function (req, res) {
     req.body.professions,
     req.body.levels,
     req.body.availabilities,
+    req.body.locations,
     esPaginationCreator(req)
   )
 
