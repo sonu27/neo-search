@@ -5,7 +5,7 @@ const userIndex = c.ES_INDEX_USER
 const professionIndex = c.ES_INDEX_PROFESSION
 const skillIndex = c.ES_INDEX_SKILL
 
-const isEmptyArray = (variable) => _.isArray(variable) && !_.isEmpty(variable)
+const isNotEmptyArray = (variable) => _.isArray(variable) && !_.isEmpty(variable)
 
 module.exports = ElasticsearchClient = (client) => {
   const userFields = [
@@ -361,13 +361,13 @@ module.exports = ElasticsearchClient = (client) => {
 
       const filters = []
 
-      if (!isEmptyArray(levels)) {
+      if (isNotEmptyArray(levels)) {
         filters.push({
           terms: { level: levels }
         })
       }
 
-      if (!isEmptyArray(filters)) {
+      if (isNotEmptyArray(filters)) {
         searchOptions.body.query.bool.filter = filters
       }
 
@@ -415,13 +415,13 @@ module.exports = ElasticsearchClient = (client) => {
 
       const filters = []
 
-      if (!isEmptyArray(levels)) {
+      if (isNotEmptyArray(levels)) {
         filters.push({
           terms: { level: levels }
         })
       }
 
-      if (!isEmptyArray(availabilities)) {
+      if (isNotEmptyArray(availabilities)) {
         const a = availabilities.map(v => {
           filters.push({
             terms: { [v]: [1] }
@@ -429,13 +429,13 @@ module.exports = ElasticsearchClient = (client) => {
         })
       }
 
-      if (!isEmptyArray(locations)) {
+      if (isNotEmptyArray(locations)) {
         filters.push({
-          terms: { locationName: locations }
+          terms: { 'locationName.keyword': locations }
         })
       }
 
-      if (!isEmptyArray(filters)) {
+      if (isNotEmptyArray(filters)) {
         searchOptions.body.query.bool.filter = filters
       }
 
