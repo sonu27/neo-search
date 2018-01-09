@@ -81,9 +81,9 @@ app.post('/skills/related', jsonParser, async function (req, res) {
 
 app.get('/locations', async function (req, res) {
   let exclude = []
-  if (req.query.exclude !== undefined) {
-    exclude = req.query.exclude.split(',')
-  }
+  // if (req.query.exclude !== undefined) {
+  //   exclude = req.query.exclude.split(',')
+  // }
 
   const data = await EsClient.searchLocations(req.query.name, exclude)
 
