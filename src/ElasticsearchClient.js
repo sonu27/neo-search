@@ -167,6 +167,44 @@ module.exports = ElasticsearchClient = (client) => {
       return search(searchOptions)
     },
 
+    'searchLocations': (query, exclude) => {
+      const exclusions = exclude.map(location => {
+        return {
+          term: {
+            "locationName.keyword": location
+          }
+        }
+      })
+
+      const searchOptions = {
+        index: userIndex,
+        from: 0,
+        size: 0,
+        body: {
+          query: {
+            bool: {
+              must: {
+                match_phrase_prefix: {
+                  locationName: `${query}`,
+                }
+              },
+              must_not: exclusions
+            }
+          },
+          aggs: {
+            locations: {
+              terms: {
+                size: 25,
+                field: 'locationName.keyword'
+              }
+            },
+          }
+        }
+      }
+
+      return search(searchOptions)
+    },
+
     'searchUsersByProfessions': (ids, relatedIdsWithCounts) => {
       const query1 = ids.map((id) => {
         return {

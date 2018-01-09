@@ -79,6 +79,19 @@ app.post('/skills/related', jsonParser, async function (req, res) {
   res.send({ relatedSkills: relatedSkills })
 })
 
+app.get('/locations', async function (req, res) {
+  let exclude = []
+  if (req.query.exclude !== undefined) {
+    exclude = req.query.exclude.split(',')
+  }
+
+  const data = await EsClient.searchLocations(req.query.name, exclude)
+
+  const locations = data.aggregations.locations.buckets.map(i => ({ name: i.key }))
+
+  res.send({ locations: locations })
+})
+
 app.get('/users', async function (req, res) {
   const professions = req.query.professions.split(',').map(Number)
   const related = await Neo4jClient.getRelatedProfessionsWithCounts(professions)
