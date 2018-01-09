@@ -31,11 +31,15 @@ const esPaginationCreator = (req) => {
   }
 }
 
-app.get('/professions/:id/related', function (req, res) {
-  Neo4jClient.getRelatedProfessions(req.params.id)
-    .then((data) => {
-      res.send({professions: data})
-    })
+app.get('/professions', async function (req, res) {
+  let exclude = []
+  if (req.query.exclude !== undefined) {
+    exclude = req.query.exclude.split(',')
+  }
+
+  const data = await EsClient.searchProfessions(req.query.name, exclude)
+
+  res.send({ professions: data.hits.hits })
 })
 
 app.get('/professions2', async function (req, res) {
@@ -46,18 +50,14 @@ app.get('/professions2', async function (req, res) {
 
   const data = await EsClient.searchProfessionsById(req.query.name, exclude)
 
-  res.send({professions: data.hits.hits})
+  res.send({ professions: data.hits.hits })
 })
 
-app.get('/professions', async function (req, res) {
-  let exclude = []
-  if (req.query.exclude !== undefined) {
-    exclude = req.query.exclude.split(',')
-  }
-
-  const data = await EsClient.searchProfessions(req.query.name, exclude)
-
-  res.send({professions: data.hits.hits})
+app.get('/professions/:id/related', function (req, res) {
+  Neo4jClient.getRelatedProfessions(req.params.id)
+    .then((data) => {
+      res.send({ professions: data })
+    })
 })
 
 app.get('/skills', async function (req, res) {
@@ -68,7 +68,7 @@ app.get('/skills', async function (req, res) {
 
   const data = await EsClient.searchSkills(req.query.name, exclude)
 
-  res.send({skills: data.hits.hits})
+  res.send({ skills: data.hits.hits })
 })
 
 app.post('/skills/related', jsonParser, async function (req, res) {
