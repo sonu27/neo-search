@@ -21,8 +21,8 @@ const jsonParser = bodyParser.json()
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 const esPaginationCreator = (req) => {
-  const size = 50
-  const page = req.query.page
+  const size = _.get(req, 'query.size', 50)
+  const page = _.get(req, 'query.page', 1)
   const from = (page * size) - size
 
   return {
