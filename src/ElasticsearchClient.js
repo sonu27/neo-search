@@ -332,7 +332,7 @@ module.exports = ElasticsearchClient = (client) => {
       return search(searchOptions)
     },
 
-    'searchUsers3': (skills, professions, levels, pagination) => {
+    'searchUsers3': (skills, professions, levels, availabilities, locations, pagination) => {
 
       const query1 = skills.map((skill) => {
         return {
@@ -402,6 +402,20 @@ module.exports = ElasticsearchClient = (client) => {
       if (isNotEmptyArray(levels)) {
         filters.push({
           terms: { level: levels }
+        })
+      }
+
+      if (isNotEmptyArray(availabilities)) {
+        const a = availabilities.map(v => {
+          filters.push({
+            terms: { [v]: [1] }
+          })
+        })
+      }
+
+      if (isNotEmptyArray(locations)) {
+        filters.push({
+          terms: { 'locationName.keyword': locations }
         })
       }
 
