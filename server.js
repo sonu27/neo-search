@@ -42,6 +42,13 @@ app.get('/professions', async function (req, res) {
   res.send({ professions: data.hits.hits })
 })
 
+app.post('/professions', jsonParser, async function (req, res) {
+  const data = await EsClient.searchProfessions(_.get(req, 'body.name', ''), _.get(req, 'body.exclude', []))
+  const professions = _.get(data, 'hits.hits', []).map(i => ({ id: i._source.id, name: i._source.name }))
+
+  res.send({ professions: professions })
+})
+
 app.get('/professions2', async function (req, res) {
   let exclude = []
   if (req.query.exclude !== undefined) {
@@ -73,8 +80,9 @@ app.get('/skills', async function (req, res) {
 
 app.post('/skills', jsonParser, async function (req, res) {
   const data = await EsClient.searchSkills(_.get(req, 'body.name', ''), _.get(req, 'body.exclude', []))
+  const skills = _.get(data, 'hits.hits', []).map(i => ({ id: i._source.id, name: i._source.name }))
 
-  res.send({ skills: data.hits.hits })
+  res.send({ skills: skills })
 })
 
 app.post('/skills/related', jsonParser, async function (req, res) {
