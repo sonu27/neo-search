@@ -71,6 +71,12 @@ app.get('/skills', async function (req, res) {
   res.send({ skills: data.hits.hits })
 })
 
+app.post('/skills', jsonParser, async function (req, res) {
+  const data = await EsClient.searchSkills(_.get(req, 'body.name', ''), _.get(req, 'body.exclude', []))
+
+  res.send({ skills: data.hits.hits })
+})
+
 app.post('/skills/related', jsonParser, async function (req, res) {
   if (!req.body) return res.sendStatus(400)
 
