@@ -10,7 +10,8 @@
     "express": "^4.16.2",
     "lodash": "^4.17.4",
     "mysql": "^2.15.0",
-    "neo4j-driver": "^1.5.0"
+    "neo4j-driver": "^1.5.0",
+    "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
     "jest": "^21.2.1"

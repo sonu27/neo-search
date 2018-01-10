@@ -178,19 +178,26 @@ app.post('/users3', jsonParser, async function (req, res) {
 app.post('/users4', jsonParser, async function (req, res) {
   if (!req.body) return res.sendStatus(400)
 
+  const idsOnly = _.get(req, 'query.idsOnly', false)
+
   const data = await EsClient.searchUsersForJob(
     req.body.skills,
     req.body.professions,
     req.body.levels,
     req.body.availabilities,
     req.body.locations,
-    esPaginationCreator(req)
+    esPaginationCreator(req),
+    idsOnly
   )
 
   const results = data.hits.hits.map(u => {
-    u._source.score = u._score
+    if (idsOnly) {
+      return u._id
+    } else {
+      u._source.score = u._score
 
-    return u._source
+      return u._source
+    }
   })
 
   res.json({
