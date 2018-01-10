@@ -414,7 +414,7 @@ module.exports = ElasticsearchClient = (client) => {
       return search(searchOptions)
     },
 
-    'searchUsersForJob': (skills, professions, levels, availabilities, locations, pagination) => {
+    'searchUsersForJob': (skills, professions, levels, availabilities, locations, pagination, idsOnly = false) => {
 
       const query1 = skills.map((skill) => {
         return {
@@ -440,7 +440,7 @@ module.exports = ElasticsearchClient = (client) => {
         index: userIndex,
         from: pagination.from,
         size: pagination.size,
-        _sourceInclude: userFields,
+        _sourceInclude: idsOnly ? false : userFields,
         body: {
           query: {
             bool: {
