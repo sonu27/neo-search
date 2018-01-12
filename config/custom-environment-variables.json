@@ -1,13 +1,18 @@
 {
+  "neo4j": {
+    "host": "NEO_HOST",
+    "user": "NEO_USER",
+    "pass": "NEO_PASS"
+  },
+  "es": {
+    "host": "ES_HOST",
+    "port": "ES_PORT"
+  },
   "db": {
     "host": "DB_HOST",
     "port": "DB_PORT",
     "user": "DB_USER",
     "pass": "DB_PASS",
     "database": "DB_DATABASE"
-  },
-  "es": {
-    "host": "ES_HOST",
-    "port": "ES_PORT"
   }
 }

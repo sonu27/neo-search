@@ -15,6 +15,9 @@ services:
   node:
     build: .
     container_name: api
+    environment:
+      - ES_HOST=elasticsearch
+      - NEO_HOST=neo4j
     volumes:
       - "importdata:/data"
     ports:
