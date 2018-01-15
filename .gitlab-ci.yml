@@ -34,14 +34,13 @@ Deploy:
 DeployAndImport:
   stage: deploy
   tags: [ docker ]
-  only:
-    - manual
-    - master
+  only: [ master ]
+  when: manual
   image:
     name: dockercloud/cli
     entrypoint: ["/bin/sh", "-c"]
   before_script:
-    - docker-cloud stack redeploy ${DOCKERCLOUD_STACK} --not-reuse-volumes
+    - docker-cloud stack redeploy ${DOCKERCLOUD_STACK} --sync --not-reuse-volumes
   script:
     - export CONTAINER_ID=$(docker-cloud container ps --service search -s Running -q)
     - docker-cloud container exec ${CONTAINER_ID} ./import_scripts/run.sh
