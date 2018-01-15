@@ -24,7 +24,7 @@ Deploy:
   stage: deploy
   tags: [ docker ]
   only: [ master ]
-  except: manual
+  except: [ manual ]
   image:
     name: dockercloud/cli
     entrypoint: ["/bin/sh", "-c"]
