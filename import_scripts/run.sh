@@ -1,5 +1,6 @@
 #!/bin/sh
 node import_scripts/0-0-create-csvs.js
+node import_scripts/0-1-delete-es-indices.js
 node import_scripts/1-1-create-user-index.js
 node import_scripts/1-2-import-users.js
 node import_scripts/1-3-create_following_relationships.js
