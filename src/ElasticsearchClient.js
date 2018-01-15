@@ -59,6 +59,10 @@ module.exports = ElasticsearchClient = (client) => {
   }
 
   return {
+    'deleteAllIndices': () => {
+      return client.indices.delete({ index: '*' })
+    },
+
     'createProfession': (profession) => {
       return create({
         index: professionIndex,
