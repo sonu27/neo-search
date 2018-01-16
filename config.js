@@ -1,6 +1,7 @@
 const config = require('config')
 
 module.exports = {
+  'APP_IMPORT_DIR': config.get('app.importDir'),
   'NEO4J_HOST': config.get('neo4j.host'),
   'NEO4J_USER': config.get('neo4j.user'),
   'NEO4J_PASS': config.get('neo4j.pass'),

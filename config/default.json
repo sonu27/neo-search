@@ -1,4 +1,7 @@
 {
+  "app": {
+    "importDir": "/data"
+  },
   "neo4j": {
     "host": "neo4j",
     "user": "neo4j",
