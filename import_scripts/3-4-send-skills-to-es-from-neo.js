@@ -24,7 +24,8 @@ session
       promise = promise.then(() => EsClient.createSkill(skill))
     },
     onCompleted: function () {
-      console.log(`ES ${count} skills created`)
+      console.log(`ES ${count} skills will be created`)
+      promise.then(() => console.log(`ES ${count} skills were created`))
       session.close()
       driver.close()
     },

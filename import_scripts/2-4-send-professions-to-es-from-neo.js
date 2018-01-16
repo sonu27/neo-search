@@ -24,7 +24,8 @@ session
       promise = promise.then(() => EsClient.createProfession(profession))
     },
     onCompleted: function () {
-      console.log(`ES ${count} professions created`)
+      console.log(`ES ${count} professions will be created`)
+      promise.then(() => console.log(`ES ${count} professions were created`))
       session.close()
       driver.close()
     },
