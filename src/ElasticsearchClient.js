@@ -436,9 +436,9 @@ module.exports = ElasticsearchClient = (client) => {
 
       const query1 = skills.map((skill) => {
         return {
-          match: {
-            skills: {
-              query: skill
+          term: {
+            'skills.keyword': {
+              value: skill
             }
           }
         }
@@ -446,9 +446,9 @@ module.exports = ElasticsearchClient = (client) => {
 
       const query2 = professions.map((profession) => {
         return {
-          match: {
-            professions: {
-              query: profession
+          term: {
+            'professions.keyword': {
+              value: profession
             }
           }
         }
@@ -462,10 +462,16 @@ module.exports = ElasticsearchClient = (client) => {
         body: {
           query: {
             bool: {
-              should: query1.concat(query2),
+              must: query1.concat(query2),
             }
           },
-          sort: sort,
+          sort: [
+            { searchScore : 'desc' },
+            { level : 'desc' },
+            'firstName.keyword',
+            'lastName.keyword',
+            '_score',
+          ],
         }
       }
 
@@ -477,13 +483,13 @@ module.exports = ElasticsearchClient = (client) => {
         })
       }
 
-      if (isNotEmptyArray(availabilities)) {
-        const a = availabilities.map(v => {
-          filters.push({
-            terms: { [v]: [1] }
-          })
-        })
-      }
+      // if (isNotEmptyArray(availabilities)) {
+      //   const a = availabilities.map(v => {
+      //     filters.push({
+      //       terms: { [v]: [1] }
+      //     })
+      //   })
+      // }
 
       if (isNotEmptyArray(locations)) {
         filters.push({
