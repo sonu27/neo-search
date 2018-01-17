@@ -436,9 +436,9 @@ module.exports = ElasticsearchClient = (client) => {
 
       const query1 = skills.map((skill) => {
         return {
-          term: {
-            'skills.keyword': {
-              value: skill
+          match: {
+            skills: {
+              query: skill
             }
           }
         }
@@ -446,9 +446,9 @@ module.exports = ElasticsearchClient = (client) => {
 
       const query2 = professions.map((profession) => {
         return {
-          term: {
-            'professions.keyword': {
-              value: profession
+          match: {
+            professions: {
+              query: profession
             }
           }
         }
@@ -462,7 +462,7 @@ module.exports = ElasticsearchClient = (client) => {
         body: {
           query: {
             bool: {
-              must: query1.concat(query2),
+              should: query1.concat(query2),
             }
           },
           sort: [
