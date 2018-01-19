@@ -11,7 +11,7 @@
     "host": "http://elasticsearch",
     "port": 9200,
     "index": {
-      "user": "search",
+      "user": "user",
       "profession": "profession",
       "skill": "skill"
     }
