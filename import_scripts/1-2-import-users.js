@@ -10,19 +10,21 @@ session
     CREATE (
       :User {
         id: toInteger(row.id),
-        firstName: trim(row.firstName),
-        lastName: trim(row.lastName),
+        firstName: row.firstName,
+        lastName: row.lastName,
         level: toInteger(row.level),
         searchScore: toInteger(row.searchScore),
         availableForFullTime: toInteger(row.availableForFullTime),
         availableForFreelance: toInteger(row.availableForFreelance),
         availableForInternships: toInteger(row.availableForInternships),
-        tagline: trim(row.tagline),
-        profileImage: trim(row.profileImage),
-        locationName: trim(row.locationName),
+        tagline: row.tagline,
+        profileImage: row.profileImage,
+        locationName: row.locationName,
         locationLatitude: toFloat(row.locationLatitude),
         locationLongitude: toFloat(row.locationLongitude),
-        createdAt: row.createdAt
+        createdAt: row.createdAt,
+        lastLoginAt: row.lastLoginAt,
+        projectsCount: toInteger(row.projectsCount)
       }
     )
   `)

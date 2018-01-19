@@ -13,7 +13,7 @@ let promise = Promise.resolve()
 let users = []
 
 session
-  .run('MATCH (u:User) return u.id AS id')
+  .run('MATCH (u:User) RETURN u.id AS id')
   .subscribe({
     onNext: function (record) {
       let id = record.get('id').toNumber()
@@ -27,7 +27,7 @@ session
             if (users.length === 1000 || count === total) {
               let body = []
               users.forEach(user => {
-                body.push({ index:  { _index: 'search', _type: 'user', _id: user.id } })
+                body.push({ index:  { _index: c.ES_INDEX_USER, _type: 'user', _id: user.id } })
                 body.push(user)
               })
               users = []
