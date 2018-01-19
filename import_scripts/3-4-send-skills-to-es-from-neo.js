@@ -11,12 +11,13 @@ let count = 0
 let promise = Promise.resolve()
 
 session
-  .run('MATCH (s:Skill) RETURN s')
+  .run('MATCH (s:Skill {visible: true}) RETURN s')
   .subscribe({
     onNext: function (record) {
       let skill = {
         id: record.get('s').properties.id.toNumber(),
         name: record.get('s').properties.name,
+        visible: record.get('s').properties.visible,
       }
 
       count++
