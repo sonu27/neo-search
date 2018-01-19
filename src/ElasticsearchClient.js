@@ -437,7 +437,7 @@ module.exports = ElasticsearchClient = (client) => {
       const query1 = skills.map((skill) => {
         return {
           match: {
-            skills: {
+            'skills.keyword': {
               query: skill
             }
           }
@@ -447,7 +447,7 @@ module.exports = ElasticsearchClient = (client) => {
       const query2 = professions.map((profession) => {
         return {
           match: {
-            professions: {
+            'professions.keyword': {
               query: profession
             }
           }
@@ -461,16 +461,26 @@ module.exports = ElasticsearchClient = (client) => {
         _sourceInclude: idsOnly ? false : userFields,
         body: {
           query: {
-            bool: {
-              should: query1.concat(query2),
+            function_score: {
+              query: {
+                bool: {
+                  should: query1.concat(query2),
+                }
+              },
+              field_value_factor: {
+                field: 'searchScore',
+                modifier: 'log1p',
+                factor: 0.25
+              },
+              boost_mode: 'sum'
             }
           },
           sort: [
+            '_score',
             { searchScore : 'desc' },
             { level : 'desc' },
             'firstName.keyword',
             'lastName.keyword',
-            '_score',
           ],
         }
       }
@@ -483,14 +493,6 @@ module.exports = ElasticsearchClient = (client) => {
         })
       }
 
-      // if (isNotEmptyArray(availabilities)) {
-      //   const a = availabilities.map(v => {
-      //     filters.push({
-      //       terms: { [v]: [1] }
-      //     })
-      //   })
-      // }
-
       if (isNotEmptyArray(locations)) {
         filters.push({
           terms: { 'locationName.keyword': locations }
@@ -498,7 +500,7 @@ module.exports = ElasticsearchClient = (client) => {
       }
 
       if (isNotEmptyArray(filters)) {
-        searchOptions.body.query.bool.filter = filters
+        searchOptions.body.query.function_score.query.bool.filter = filters
       }
 
       console.log(JSON.stringify(searchOptions))
