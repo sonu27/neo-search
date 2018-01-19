@@ -13,8 +13,7 @@ module.exports = ElasticsearchClient = (client) => {
     'firstName',
     'lastName',
     'level',
-    'locationLatitude',
-    'locationLongitude',
+    'location',
     'locationName',
     'profileImage',
     'searchScore',
@@ -61,6 +60,10 @@ module.exports = ElasticsearchClient = (client) => {
   return {
     'deleteAllIndices': () => {
       return client.indices.delete({ index: '*' })
+    },
+
+    'createIndex': (index, options) => {
+      return client.indices.create({ index: index, body: options })
     },
 
     'createProfession': (profession) => {
@@ -437,7 +440,7 @@ module.exports = ElasticsearchClient = (client) => {
       const query1 = skills.map((skill) => {
         return {
           match: {
-            'skills.keyword': {
+            'skills.english': {
               query: skill
             }
           }
@@ -447,7 +450,7 @@ module.exports = ElasticsearchClient = (client) => {
       const query2 = professions.map((profession) => {
         return {
           match: {
-            'professions.keyword': {
+            'professions.english': {
               query: profession
             }
           }
