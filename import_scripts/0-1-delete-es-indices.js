@@ -70,7 +70,8 @@ esClient.deleteAllIndices()
               "type": "byte"
             },
             "createdAt": {
-              "type": "date"
+              "type": "date",
+              "format": "yyyy-MM-dd HH:mm:ss"
             },
             "firstName": {
               "type": "text",
@@ -85,7 +86,8 @@ esClient.deleteAllIndices()
               "type": "long"
             },
             "lastLoginAt": {
-              "type": "date"
+              "type": "date",
+              "format": "yyyy-MM-dd HH:mm:ss"
             },
             "lastName": {
               "type": "text",

@@ -15,7 +15,7 @@ const processRow = (writeStream, lastField) => (row) => {
     } else if (typeof row[key] === 'string') {
       output += `"${formatString(row[key])}"`
     } else {
-      output += 'null'
+      output += ''
     }
 
     if (key !== lastField) {
