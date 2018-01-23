@@ -27,7 +27,6 @@ module.exports = RecordTransformer = () => {
         'availableForFreelance': record.get('availableForFreelance').toNumber(),
         'availableForInternships': record.get('availableForInternships').toNumber(),
         'tagline': record.get('tagline'),
-        'projectsCount': record.get('projectsCount').toNumber(),
         'usersFollowing': arrayToNumbers(record.get('usersFollowing')),
         'professionIds': arrayToNumbers(record.get('professionIds')),
         'professions': record.get('professions'),
