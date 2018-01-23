@@ -23,8 +23,7 @@ session
         locationLatitude: toFloat(row.locationLatitude),
         locationLongitude: toFloat(row.locationLongitude),
         createdAt: row.createdAt,
-        lastLoginAt: row.lastLoginAt,
-        projectsCount: toInteger(row.projectsCount)
+        lastLoginAt: row.lastLoginAt
       }
     )
   `)

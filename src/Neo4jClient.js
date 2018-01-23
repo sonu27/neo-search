@@ -221,7 +221,6 @@ module.exports = Neo4jClient = (driver) => {
               u.tagline AS tagline,
               u.createdAt AS createdAt,
               u.lastLoginAt AS lastLoginAt,
-              u.projectsCount AS projectsCount,
               collect(DISTINCT u1.id) AS usersFollowing,
               collect(DISTINCT p.id) AS professionIds,
               collect(DISTINCT p.name) AS professions,

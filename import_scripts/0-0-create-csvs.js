@@ -16,7 +16,6 @@ select
   u.availableForInternships as availableForInternships,
   u.createdAt as createdAt,
   u.lastLoginAt as lastLoginAt,
-  u.projectsCount as projectsCount,
   trim(tb.text) as tagline,
   a.filename as profileImage,
   trim(l.name) as locationName,
