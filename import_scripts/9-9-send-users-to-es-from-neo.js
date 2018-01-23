@@ -32,14 +32,10 @@ session
               })
               users = []
 
-              esClient.bulk({
-                body: body
-              }, function (error, resp) {
-                if (typeof error !== 'undefined') {
-                  console.log(error)
-                }
-              })
-              console.log(`ES ${count} users created`)
+              esClient.bulk({ body: body })
+                .catch((error) => console.log(error))
+
+              console.log(`ES ${count} users sent`)
             }
 
             if (count === total) {
