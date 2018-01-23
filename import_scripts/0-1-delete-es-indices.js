@@ -132,9 +132,6 @@ esClient.deleteAllIndices()
             "profileImage": {
               "type": "text"
             },
-            "projectsCount": {
-              "type": "long"
-            },
             "searchScore": {
               "type": "long"
             },
