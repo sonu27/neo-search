@@ -6,11 +6,12 @@ stages:
 variables:
   VERSION: $CI_COMMIT_REF_SLUG
   IMAGE_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  NEO_IMAGE_NAME: $CI_REGISTRY_IMAGE:neo4j-$CI_COMMIT_REF_SLUG
 
 Image:
   stage: build
   tags: [ shell ]
-  script: docker build -t ${IMAGE_NAME} -f Dockerfile .
+  script: docker build -t ${IMAGE_NAME} .
 
 Push:
   stage: push
@@ -29,6 +30,16 @@ Deploy:
     entrypoint: ["/bin/sh", "-c"]
   script:
     - docker-cloud stack redeploy ${DOCKERCLOUD_STACK}
+
+BuildNeoImage:
+  stage: build
+  tags: [ shell ]
+  when: manual
+  before_script:
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
+  script:
+    - docker build -t ${NEO_IMAGE_NAME} ./docker/neo4j/
+    - docker push ${NEO_IMAGE_NAME}
 
 DeployAndImport:
   stage: deploy
