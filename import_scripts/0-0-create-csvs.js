@@ -67,7 +67,7 @@ client.createCsv(path, sql, lastField)
   .then(() => {
     let path = `${importDir}/industries.csv`
     let sql = `
-    select id, title AS "name"
+    select id, trim(title) AS "name"
     from industries
     `
     let lastField = 'name'
