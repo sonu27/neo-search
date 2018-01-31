@@ -65,6 +65,16 @@ client.createCsv(path, sql, lastField)
     return client.createCsv(path, sql, lastField)
   })
   .then(() => {
+    let path = `${importDir}/industries.csv`
+    let sql = `
+    select id, title AS "name"
+    from industries
+    `
+    let lastField = 'name'
+
+    return client.createCsv(path, sql, lastField)
+  })
+  .then(() => {
     let path = `${importDir}/user_followers.csv`
     let sql = `
     select followerUserId, followedUserId, createdAt
@@ -99,4 +109,17 @@ client.createCsv(path, sql, lastField)
 
     return client.createCsv(path, sql, lastField)
   })
+  .then(() => {
+    let path = `${importDir}/user_industries.csv`
+    let sql = `
+    SELECT
+      userId,
+      industryId
+    FROM user_industries ui
+    INNER JOIN industries i
+    ON ui.industryId = i.id
+    `
+    let lastField = 'industryId'
 
+    return client.createCsv(path, sql, lastField)
+  })

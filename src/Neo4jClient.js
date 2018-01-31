@@ -205,6 +205,7 @@ module.exports = Neo4jClient = (driver) => {
             OPTIONAL MATCH (u)-[:FOLLOWS]->(u1)
             OPTIONAL MATCH (u)-[:HAS_PROFESSION]->(p)
             OPTIONAL MATCH (u)-[:HAS_SKILL]->(s)
+            OPTIONAL MATCH (u)-[:HAS_INDUSTRY]->(i)
             RETURN
               u.id AS id,
               u.firstName AS firstName,
@@ -225,7 +226,8 @@ module.exports = Neo4jClient = (driver) => {
               collect(DISTINCT p.id) AS professionIds,
               collect(DISTINCT p.name) AS professions,
               collect(DISTINCT s.id) AS skillIds,
-              collect(DISTINCT s.name) AS skills
+              collect(DISTINCT s.name) AS skills,
+              collect(DISTINCT i.name) AS industries
           `)
           .subscribe({
             onNext: function (record) {
