@@ -23,6 +23,7 @@ module.exports = ElasticsearchClient = (client) => {
     'tagline',
     'professions',
     'skills',
+    'industries',
   ]
 
   const sort = [

@@ -151,6 +151,15 @@ esClient.deleteAllIndices()
                 }
               }
             },
+            "industries": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            },
             "tagline": {
               "type": "text",
               "fields": {
