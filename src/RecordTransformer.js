@@ -1,5 +1,6 @@
+const _ = require('lodash')
 
-module.exports = RecordTransformer = () => {
+module.exports = () => {
   function arrayToNumbers(arr) {
     return arr.map(element => {
       return element.toNumber()
@@ -8,43 +9,43 @@ module.exports = RecordTransformer = () => {
 
   return {
     'toObject': (record) => {
-      const createdAt = record.get('createdAt')
-      const lastLoginAt = record.get('lastLoginAt')
-      const level = record.get('level')
-      const searchScore = record.get('searchScore')
-      const lat = record.get('locationLatitude')
-      const lon = record.get('locationLongitude')
+      const u = record.u.properties
+
+      const createdAt = u.createdAt
+      const lastLoginAt = u.lastLoginAt
+      const lat = u.locationLatitude
+      const lon = u.locationLongitude
 
       const user = {
-        'id': record.get('id').toNumber(),
-        'firstName': record.get('firstName'),
-        'lastName': record.get('lastName'),
-        'level': level === null ? 0 : level.toNumber(),
-        'locationName': record.get('locationName'),
-        'profileImage': record.get('profileImage'),
-        'searchScore': searchScore === null ? 0 : searchScore.toNumber(),
-        'availableForFullTime': record.get('availableForFullTime').toNumber(),
-        'availableForFreelance': record.get('availableForFreelance').toNumber(),
-        'availableForInternships': record.get('availableForInternships').toNumber(),
-        'tagline': record.get('tagline'),
-        'usersFollowing': arrayToNumbers(record.get('usersFollowing')),
-        'professionIds': arrayToNumbers(record.get('professionIds')),
-        'professions': record.get('professions'),
-        'skillIds': arrayToNumbers(record.get('skillIds')),
-        'skills': record.get('skills'),
-        'industries': record.get('industries'),
-        'experiences': record.get('experiences'),
+        'id': u.id.toNumber(),
+        'firstName': u.firstName,
+        'lastName': u.lastName,
+        'level': _.get(u, 'level', 0),
+        'locationName': u.locationName,
+        'profileImage': u.profileImage,
+        'searchScore': _.get(u, 'searchScore', 0),
+        'availableForFullTime': u.availableForFullTime.toNumber(),
+        'availableForFreelance': u.availableForFreelance.toNumber(),
+        'availableForInternships': u.availableForInternships.toNumber(),
+        'tagline': u.tagline,
+        'usersFollowing': arrayToNumbers(record.usersFollowing),
+        'professionIds': arrayToNumbers(record.professionIds),
+        'professions': record.professions,
+        'skillIds': arrayToNumbers(record.skillIds),
+        'skills': record.skills,
+        'industries': record.industries,
+        'experiences': record.experiences,
       }
 
-      if (createdAt !== null) {
+      if ('createdAt' in u) {
         user.createdAt = createdAt
       }
 
-      if (lastLoginAt !== null) {
+      if ('lastLoginAt' in u) {
         user.lastLoginAt = lastLoginAt
       }
 
-      if (lat !== null && lon !== null) {
+      if ('lat' in u && 'lon' in u) {
         user.location = { lat: lat, lon: lon }
       }
 
