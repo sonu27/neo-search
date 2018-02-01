@@ -11,45 +11,38 @@ module.exports = () => {
     'toObject': (record) => {
       const u = record.u.properties
 
-      const createdAt = u.createdAt
-      const lastLoginAt = u.lastLoginAt
-      const lat = u.locationLatitude
-      const lon = u.locationLongitude
+      u.id = u.id.toNumber()
+      u.availableForFullTime = u.availableForFullTime.toNumber()
+      u.availableForFreelance = u.availableForFreelance.toNumber()
+      u.availableForInternships = u.availableForInternships.toNumber()
+      u.usersFollowing = arrayToNumbers(_.get(record, 'usersFollowing', []))
+      u.professionIds = arrayToNumbers(_.get(record, 'professionIds', []))
+      u.skillIds = arrayToNumbers(_.get(record, 'skillIds', []))
+      u.professions = _.get(record, 'professions', [])
+      u.skills = _.get(record, 'skills', [])
+      u.industries = _.get(record, 'industries', [])
+      u.experiences = _.get(record, 'experiences', [])
 
-      const user = {
-        'id': u.id.toNumber(),
-        'firstName': u.firstName,
-        'lastName': u.lastName,
-        'level': _.get(u, 'level', 0),
-        'locationName': u.locationName,
-        'profileImage': u.profileImage,
-        'searchScore': _.get(u, 'searchScore', 0),
-        'availableForFullTime': u.availableForFullTime.toNumber(),
-        'availableForFreelance': u.availableForFreelance.toNumber(),
-        'availableForInternships': u.availableForInternships.toNumber(),
-        'tagline': u.tagline,
-        'usersFollowing': arrayToNumbers(record.usersFollowing),
-        'professionIds': arrayToNumbers(record.professionIds),
-        'professions': record.professions,
-        'skillIds': arrayToNumbers(record.skillIds),
-        'skills': record.skills,
-        'industries': record.industries,
-        'experiences': record.experiences,
+      if ('locationLatitude' in u && 'locationLongitude' in u) {
+        u.location = { lat: u.locationLatitude, lon: u.locationLongitude }
       }
 
-      if ('createdAt' in u) {
-        user.createdAt = createdAt
+      if ('searchScore' in u) {
+        u.searchScore = u.searchScore.toNumber()
+      } else {
+        u.searchScore = 0
       }
 
-      if ('lastLoginAt' in u) {
-        user.lastLoginAt = lastLoginAt
+      if ('level' in u) {
+        u.level = u.level.toNumber()
+      } else {
+        u.level = 0
       }
 
-      if ('lat' in u && 'lon' in u) {
-        user.location = { lat: lat, lon: lon }
-      }
+      delete u.locationLatitude
+      delete u.locationLongitude
 
-      return user
+      return u
     }
   }
 }
