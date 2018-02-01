@@ -33,6 +33,7 @@ module.exports = RecordTransformer = () => {
         'skillIds': arrayToNumbers(record.get('skillIds')),
         'skills': record.get('skills'),
         'industries': record.get('industries'),
+        'experiences': record.get('experiences'),
       }
 
       if (createdAt !== null) {
