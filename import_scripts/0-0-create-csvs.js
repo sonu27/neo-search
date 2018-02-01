@@ -123,3 +123,21 @@ client.createCsv(path, sql, lastField)
 
     return client.createCsv(path, sql, lastField)
   })
+  .then(() => {
+    let path = `${importDir}/user_experiences.csv`
+    let sql = `
+    SELECT DISTINCT
+      e.authorId AS "userId",
+      CASE WHEN e.organisationPageId IS NULL THEN trim(e.organisationName) ELSE trim(p.title) END as experience
+    FROM experiences e
+    INNER JOIN users u
+    ON u.id = e.authorId
+    LEFT JOIN pages p
+    ON e.organisationPageId = p.id
+    WHERE e.deletedAt IS NULL
+    AND u.deletedAt IS NULL
+    `
+    let lastField = 'experience'
+
+    return client.createCsv(path, sql, lastField)
+  })
