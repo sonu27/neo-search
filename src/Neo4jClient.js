@@ -208,21 +208,7 @@ module.exports = Neo4jClient = (driver) => {
             OPTIONAL MATCH (u)-[:HAS_SKILL]->(s)
             OPTIONAL MATCH (u)-[:FOLLOWS]->(u1)
             RETURN
-              u.id AS id,
-              u.firstName AS firstName,
-              u.lastName AS lastName,
-              u.level AS level,
-              u.locationLatitude AS locationLatitude,
-              u.locationLongitude AS locationLongitude,
-              u.locationName AS locationName,
-              u.profileImage AS profileImage,
-              u.searchScore AS searchScore,
-              u.availableForFullTime AS availableForFullTime,
-              u.availableForFreelance AS availableForFreelance,
-              u.availableForInternships AS availableForInternships,
-              u.tagline AS tagline,
-              u.createdAt AS createdAt,
-              u.lastLoginAt AS lastLoginAt,
+              u,
               collect(DISTINCT u1.id) AS usersFollowing,
               collect(DISTINCT p.id) AS professionIds,
               collect(DISTINCT p.name) AS professions,
@@ -233,7 +219,7 @@ module.exports = Neo4jClient = (driver) => {
           `)
           .subscribe({
             onNext: function (record) {
-              let user = RecordTransformer().toObject(record)
+              let user = RecordTransformer().toObject(record.toObject())
               resolve(user)
             },
             onCompleted: function () {
