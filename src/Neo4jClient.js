@@ -202,11 +202,11 @@ module.exports = Neo4jClient = (driver) => {
         session
           .run(`
             MATCH (u:User {id: ${id}})
-            OPTIONAL MATCH (u)-[:FOLLOWS]->(u1)
             OPTIONAL MATCH (u)-[:HAS_PROFESSION]->(p)
-            OPTIONAL MATCH (u)-[:HAS_SKILL]->(s)
             OPTIONAL MATCH (u)-[:HAS_INDUSTRY]->(i)
             OPTIONAL MATCH (u)-[:HAS_EXPERIENCE]->(e)
+            OPTIONAL MATCH (u)-[:HAS_SKILL]->(s)
+            OPTIONAL MATCH (u)-[:FOLLOWS]->(u1)
             RETURN
               u.id AS id,
               u.firstName AS firstName,
