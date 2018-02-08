@@ -20,6 +20,8 @@ module.exports = () => {
       u.skillIds = arrayToNumbers(_.get(record, 'skillIds', []))
       u.professions = _.get(record, 'professions', [])
       u.skills = _.get(record, 'skills', [])
+      u.projectSkills = _.get(record, 'projectSkills', [])
+      u.projectIndustries = _.get(record, 'projectIndustries', [])
       u.industries = _.get(record, 'industries', [])
       u.experiences = _.get(record, 'experiences', [])
 
