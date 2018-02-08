@@ -141,3 +141,60 @@ client.createCsv(path, sql, lastField)
 
     return client.createCsv(path, sql, lastField)
   })
+  .then(() => {
+    let path = `${importDir}/projects.csv`
+    let sql = `
+    SELECT
+      p.id,
+      p.title AS name,
+      p.authorId AS userId,
+      p.updatedAt
+    FROM projects p
+    INNER JOIN users u
+    ON p.authorId = u.id
+    WHERE p.deletedAt IS NULL
+    AND u.deletedAt IS NULL
+    AND p.isSpam = 0
+    `
+    let lastField = 'updatedAt'
+
+    return client.createCsv(path, sql, lastField)
+  })
+  .then(() => {
+    let path = `${importDir}/project_skills.csv`
+    let sql = `
+    SELECT
+      ps.projectId,
+      ps.skillId
+    FROM project_skills ps
+    INNER JOIN projects p
+    ON ps.projectId = p.id
+    INNER JOIN users u
+    ON p.authorId = u.id
+    WHERE p.deletedAt IS NULL
+    AND u.deletedAt IS NULL
+    AND p.isSpam = 0
+    `
+    let lastField = 'skillId'
+
+    return client.createCsv(path, sql, lastField)
+  })
+  .then(() => {
+    let path = `${importDir}/project_industries.csv`
+    let sql = `
+    SELECT
+      pi.projectId,
+      pi.industryId
+    FROM project_industries pi
+    INNER JOIN projects p
+    ON pi.projectId = p.id
+    INNER JOIN users u
+    ON p.authorId = u.id
+    WHERE p.deletedAt IS NULL
+    AND u.deletedAt IS NULL
+    AND p.isSpam = 0
+    `
+    let lastField = 'industryId'
+
+    return client.createCsv(path, sql, lastField)
+  })
