@@ -209,6 +209,8 @@ module.exports = Neo4jClient = (driver) => {
               [(u)-[:HAS_PROFESSION]->(p) | p.name] AS professions,
               [(u)-[:HAS_SKILL]->(s) | s.id] AS skillIds,
               [(u)-[:HAS_SKILL]->(s) | s.name] AS skills,
+              [(u)-[:HAS_PROJECT]->()-[:PROJECT_HAS_SKILL]->(s) | s.name] AS projectSkills,
+              [(u)-[:HAS_PROJECT]->()-[:PROJECT_HAS_INDUSTRY]->(s) | s.name] AS projectIndustries,
               [(u)-[:HAS_INDUSTRY]->(i) | i.name] AS industries,
               [(u)-[:HAS_EXPERIENCE]->(e) | e.name] AS experiences
           `)
