@@ -10,7 +10,9 @@ module.exports = () => {
   return {
     'toObject': (record) => {
       const u = record.u.properties
+      const name = _.get(u, 'firstName', '') + ' ' + _.get(u, 'lastName', '')
 
+      u.name = name.trim()
       u.id = u.id.toNumber()
       u.availableForFullTime = u.availableForFullTime.toNumber()
       u.availableForFreelance = u.availableForFreelance.toNumber()
@@ -41,8 +43,15 @@ module.exports = () => {
         u.level = 0
       }
 
+      if ('profileImage' in u) {
+        u.profileImage = `https://images3.the-dots.com/${u.profileImage}?p=profileImage`
+      }
+
       delete u.locationLatitude
       delete u.locationLongitude
+
+      delete u.firstName
+      delete u.lastName
 
       return u
     }
