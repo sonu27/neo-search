@@ -73,14 +73,8 @@ esClient.deleteAllIndices()
               "type": "date",
               "format": "yyyy-MM-dd HH:mm:ss"
             },
-            "firstName": {
-              "type": "text",
-              "fields": {
-                "keyword": {
-                  "type": "keyword",
-                  "ignore_above": 256
-                }
-              }
+            "name": {
+              "type": "text"
             },
             "id": {
               "type": "long"
@@ -88,15 +82,6 @@ esClient.deleteAllIndices()
             "lastLoginAt": {
               "type": "date",
               "format": "yyyy-MM-dd HH:mm:ss"
-            },
-            "lastName": {
-              "type": "text",
-              "fields": {
-                "keyword": {
-                  "type": "keyword",
-                  "ignore_above": 256
-                }
-              }
             },
             "level": {
               "type": "byte"
