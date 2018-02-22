@@ -40,6 +40,7 @@ client.createCsv(path, sql, lastField)
     select distinct
       p.id as id,
       trim(p.title) as name,
+      p.parentId as parentId,
       CASE WHEN p.showInResults=1 THEN 'TRUE' ELSE 'FALSE' END as visible
     from professions p
     inner join user_professions up
@@ -59,6 +60,7 @@ client.createCsv(path, sql, lastField)
     from skills s
     inner join user_skills us
     on s.id = us.skillid
+    WHERE s.deletedAt IS NULL
     `
     let lastField = 'visible'
 
