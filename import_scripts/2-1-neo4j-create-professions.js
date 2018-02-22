@@ -20,6 +20,14 @@ session
       )
     `)
   })
+  .then(() => {
+    return session.run(`
+      USING PERIODIC COMMIT
+      LOAD CSV WITH HEADERS FROM "file:///professions.csv" AS row
+      MATCH (c:Profession {id: toInteger(row.parentId)}), (p:Profession {id: toInteger(row.id)})
+      CREATE (p)-[r:HAS_PARENT_PROFESSION]->(c)
+    `)
+  })
   .then(function () {
     session.close()
     driver.close()
