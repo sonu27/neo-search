@@ -204,10 +204,8 @@ module.exports = Neo4jClient = (driver) => {
             MATCH (u:User {id: ${id}})
             RETURN
               u,
-              [(u)-[:FOLLOWS]->(u1) | u1.id] AS usersFollowing,
-              [(u)-[:HAS_PROFESSION]->(p) | p.id] AS professionIds,
               [(u)-[:HAS_PROFESSION]->(p) | p.name] AS professions,
-              [(u)-[:HAS_SKILL]->(s) | s.id] AS skillIds,
+              [(u)-[:HAS_PROFESSION]->()-[:HAS_PARENT_PROFESSION]->(c) | c.name] AS professionCounterparts,
               [(u)-[:HAS_SKILL]->(s) | s.name] AS skills,
               [(u)-[:HAS_PROJECT]->()-[:PROJECT_HAS_SKILL]->(s) | s.name] AS projectSkills,
               [(u)-[:HAS_PROJECT]->()-[:PROJECT_HAS_INDUSTRY]->(s) | s.name] AS projectIndustries,
