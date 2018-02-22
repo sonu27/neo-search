@@ -227,6 +227,92 @@ module.exports = Neo4jClient = (driver) => {
             }
           })
       })
+    },
+
+    'getProfession': (id) => {
+      const session = driver.session()
+
+      return new Promise((resolve, reject) => {
+        session
+          .run(`
+            MATCH (p:Profession {id: ${id}})
+            RETURN
+              p,
+              [(p)-[r:HAS_PARENT_PROFESSION]->(c) | c.name] AS counterparts
+          `)
+          .subscribe({
+            onNext: function (record) {
+              let profession = RecordTransformer().toProfession(record.toObject())
+              resolve(profession)
+            },
+            onCompleted: function () {
+              session.close()
+            },
+            onError: function (error) {
+              console.log(error)
+              session.close()
+              reject(error)
+            }
+          })
+      })
+    },
+
+    'createRelatedSkillsForProfession': (id) => {
+      const session = driver.session()
+
+      return new Promise((resolve, reject) => {
+        session
+          .run(`
+            MATCH (p:Profession {id: ${id}})<-[:HAS_PROFESSION]-()-[:HAS_SKILL]->(s)
+            WITH p, s, count(s) AS count
+            ORDER BY count DESC LIMIT 20
+            WHERE count > 2
+            create (p)-[:PROFESSION_HAS_SKILL]->(s)
+          `)
+          .subscribe({
+            onNext: function (record) {
+              let profession = RecordTransformer().toProfession(record.toObject())
+              resolve(profession)
+            },
+            onCompleted: function () {
+              session.close()
+            },
+            onError: function (error) {
+              console.log(error)
+              session.close()
+              reject(error)
+            }
+          })
+      })
+    },
+
+    'getRelatedSkillsForProfession': (id) => {
+      const session = driver.session()
+
+      return new Promise((resolve, reject) => {
+        session
+          .run(`
+            MATCH (p:Profession {id: ${id}})<-[:HAS_PROFESSION]-()-[:HAS_SKILL]->(s)
+            WITH p, s, count(s) AS count
+            ORDER BY count DESC LIMIT 20
+            WHERE count > 2
+            RETURN collect(s.name) AS skills
+          `)
+          .subscribe({
+            onNext: function (record) {
+              let profession = record.toObject()
+              resolve(profession)
+            },
+            onCompleted: function () {
+              session.close()
+            },
+            onError: function (error) {
+              console.log(error)
+              session.close()
+              reject(error)
+            }
+          })
+      })
     }
   }
 }

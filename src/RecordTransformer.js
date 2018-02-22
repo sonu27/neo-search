@@ -52,6 +52,15 @@ module.exports = () => {
       delete u.lastName
 
       return u
+    },
+
+    'toProfession': (record) => {
+      const p = record.p.properties
+
+      p.id = p.id.toNumber()
+      p.counterparts = _.get(record, 'counterparts', [])
+
+      return p
     }
   }
 }
