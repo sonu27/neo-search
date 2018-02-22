@@ -3,6 +3,7 @@
   "version": "v1.0.0",
   "license": "UNLICENSED",
   "dependencies": {
+    "algoliasearch": "^3.24.9",
     "body-parser": "^1.18.2",
     "config": "^1.29.0",
     "cors": "^2.8.4",

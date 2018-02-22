@@ -6,18 +6,18 @@ const Neo4jClient = require('../src/Neo4jClient')(driver)
 const elasticsearch = require('elasticsearch')
 const esClient = new elasticsearch.Client({host: `${c.ES_HOST}:${c.ES_PORT}`})
 
-const algoliasearch = require('algoliasearch');
-var client = algoliasearch('ZWTZSDMEVX', '6123dc701f639f6e1ddecf1dbf928c3a');
-var index = client.initIndex('test_amarjeet2');
+const algoliasearch = require('algoliasearch')
+var client = algoliasearch('ZWTZSDMEVX', '6123dc701f639f6e1ddecf1dbf928c3a')
+var index = client.initIndex('test_professions')
 
 const session = driver.session()
 let count = 0
 let total = 0
 let promise = Promise.resolve()
-let users = []
+let professions = []
 
 session
-  .run('MATCH (u:User) RETURN u.id AS id')
+  .run('MATCH (p:Profession {visible: true}) RETURN p.id AS id')
   .subscribe({
     onNext: function (record) {
       let id = record.get('id').toNumber()
@@ -25,26 +25,23 @@ session
 
       promise = promise.then(
         () => new Promise((resolve, reject) => {
-          Neo4jClient.getUser(id).then(user => {
+          Neo4jClient.getProfession(id).then(profession => {
             count++
-            users.push(user)
-            if (users.length === 1000 || count === total) {
+            professions.push(profession)
+            if (professions.length === 1000 || count === total) {
               let body = []
-              users.forEach(user => {
-                // body.push({ index:  { _index: c.ES_INDEX_USER, _type: 'user', _id: user.id } })
-                body.push(user)
+              professions.forEach(profession => {
+                body.push(profession)
               })
-              users = []
+              professions = []
 
               index.addObjects(body, function(err, content) {
                 if (err) {
-                  console.error(err);
+                  console.error(err)
                 }
-              });
-              // esClient.bulk({ body: body })
-              //   .catch((error) => console.log(error))
+              })
 
-              console.log(`ES ${count} users sent`)
+              console.log(`ES ${count} professions sent`)
             }
 
             if (count === total) {
@@ -57,7 +54,7 @@ session
       )
     },
     onCompleted: function () {
-      console.log(`ES ${total} users will be created`)
+      console.log(`ES ${total} professions will be created`)
 
       session.close()
     },
