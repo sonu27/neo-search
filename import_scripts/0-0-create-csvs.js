@@ -200,3 +200,35 @@ client.createCsv(path, sql, lastField)
 
     return client.createCsv(path, sql, lastField)
   })
+  .then(() => {
+    let path = `${importDir}/profession_counterparts.csv`
+    let sql = `
+    SELECT
+      professionId,
+      counterpartId,
+      equivalence
+    FROM profession_counterparts
+    `
+    let lastField = 'equivalence'
+
+    return client.createCsv(path, sql, lastField)
+  })
+  .then(() => {
+    let path = `${importDir}/pip.csv`
+    let sql = `
+    select distinct
+      p.id as id,
+      trim(p.title) as name,
+      p.parentId as parentId,
+      CASE WHEN p.showInResults=1 THEN 'TRUE' ELSE 'FALSE' END as visible,
+      count(up.userId) as userCount
+    from professions p
+    inner join user_professions up
+    on p.id = up.professionId
+    group by id
+    order by userCount desc, name
+    `
+    let lastField = 'userCount'
+
+    return client.createCsv(path, sql, lastField)
+  })

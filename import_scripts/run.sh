@@ -13,4 +13,5 @@ node import_scripts/6-1-neo4j-create-projects-and-rels.js
 node import_scripts/9-0-delete-es-indices.js
 node import_scripts/9-1-send-professions-to-es-from-neo.js
 node import_scripts/9-2-send-skills-to-es-from-neo.js
+node import_scripts/9-8.js
 node import_scripts/9-9-send-users-to-es-from-neo.js
