@@ -286,6 +286,64 @@ module.exports = Neo4jClient = (driver) => {
       })
     },
 
+    'createRelatedProfession': (p1, p2, pc) => {
+      const session = driver.session()
+
+      return new Promise((resolve, reject) => {
+        session
+          .run(`
+            MATCH (p1:Profession {id: ${p1}}), (p2:Profession {id: ${p2}})
+            CREATE (p1)-[:RELATES_TO {weight: ${pc}}]->(p2)
+          `)
+          .subscribe({
+            onNext: function (record) {
+              resolve()
+            },
+            onCompleted: function () {
+              session.close()
+            },
+            onError: function (error) {
+              console.log(error)
+              session.close()
+              reject(error)
+            }
+          })
+      })
+    },
+
+    'createRelatedProfessionsWithPc': (id) => {
+      const session = driver.session()
+
+      return new Promise((resolve, reject) => {
+        session
+          .run(`
+            MATCH (p:Profession {id: ${id}})<-[:HAS_PROFESSION]-(u)
+            WITH count(u) AS userCount
+            MATCH (p:Profession {id: ${id}})<-[:HAS_PROFESSION]-(u)-[:HAS_PROFESSION]->(p2)
+            RETURN p2.id AS professionId, p2.name AS professionName, count(p2) AS count, (toFloat(count(p2)) / toFloat(userCount)) AS pc
+            ORDER BY count DESC LIMIT 10
+          `)
+          .subscribe({
+            onNext: function (record) {
+              let row = record.toObject()
+              if (row.pc > 0.05) {
+                Neo4jClient(driver).createRelatedProfession(id, row.professionId.toNumber(), row.pc)
+              }
+            },
+            onCompleted: function () {
+              session.close()
+              console.log('done ' + id)
+              resolve()
+            },
+            onError: function (error) {
+              console.log(error)
+              session.close()
+              reject(error)
+            }
+          })
+      })
+    },
+
     'getRelatedSkillsForProfession': (id) => {
       const session = driver.session()
 

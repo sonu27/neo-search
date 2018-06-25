@@ -89,13 +89,14 @@ client.createCsv(path, sql, lastField)
   .then(() => {
     let path = `${importDir}/user_professions.csv`
     let sql = `
-    select
+    select distinct
       up.userId as userId,
       up.professionId as professionId
     from user_professions up
     inner join users u
     on up.userId = u.id
     where u.deletedAt is null
+    and u.id > 1000
     `
     let lastField = 'professionId'
 
@@ -104,7 +105,7 @@ client.createCsv(path, sql, lastField)
   .then(() => {
     let path = `${importDir}/user_skills.csv`
     let sql = `
-    select userId, skillId
+    select distinct userId, skillId
     from user_skills
     `
     let lastField = 'skillId'
@@ -114,7 +115,7 @@ client.createCsv(path, sql, lastField)
   .then(() => {
     let path = `${importDir}/user_industries.csv`
     let sql = `
-    SELECT
+    SELECT DISTINCT
       userId,
       industryId
     FROM user_industries ui
@@ -165,7 +166,7 @@ client.createCsv(path, sql, lastField)
   .then(() => {
     let path = `${importDir}/project_skills.csv`
     let sql = `
-    SELECT
+    SELECT DISTINCT
       ps.projectId,
       ps.skillId
     FROM project_skills ps
@@ -184,7 +185,7 @@ client.createCsv(path, sql, lastField)
   .then(() => {
     let path = `${importDir}/project_industries.csv`
     let sql = `
-    SELECT
+    SELECT DISTINCT
       pi.projectId,
       pi.industryId
     FROM project_industries pi

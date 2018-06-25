@@ -1,0 +1,269 @@
+docker run -e DOCKERCLOUD_USER -e DOCKERCLOUD_APIKEY -e DOCKERCLOUD_NAMESPACE dockercloud/cli container ps --service search -s Running -q
+
+docker run -e DOCKERCLOUD_USER -e DOCKERCLOUD_APIKEY -e DOCKERCLOUD_NAMESPACE dockercloud/cli container exec $(docker run -e DOCKERCLOUD_USER -e DOCKERCLOUD_APIKEY -e DOCKERCLOUD_NAMESPACE dockercloud/cli container ps --service search -s Running -q) ./import_scripts/run.sh
+
+PUT skill
+{
+  "mappings": {
+    "skill": {
+      "properties": {
+        "id": { "type": "integer" },
+        "name": { "type": "text" },
+        "name.keyword": { "type": "keyword" }
+      }
+    }
+  }
+}
+
+POST /search/user/_search
+{
+  "_source": {
+    "includes": [
+      "id"
+    ]
+  },
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "professionsFirstDegree": 70966
+          }
+        }
+      ]
+    }
+  }
+}
+
+POST /search/user/_search
+{
+  "from": 0,
+  "size": 100,
+  "_source": {
+    "includes": [
+      "id"
+    ]
+  },
+  "query": {
+    "term": {
+      "professionsFirstDegree": 70966
+    }
+  }
+}
+
+POST /search/user/_search
+{
+  "size": 0,
+  "aggs": {
+    "name": {
+      "terms": {
+        "size": 100,
+        "field": "professionsFirstDegree"
+      }
+    }
+  }
+}
+
+select u.id, u.firstName, u.lastName, u.levelid, u.createdAt, l.latitude, l.longitude
+from users u
+left join locations l
+on u.locationid = l.id
+where u.deletedAt IS NULL
+and u.id > 100
+
+select *
+from user_followers
+where followerUserId != followedUserId
+
+select distinct p.id, p.title
+from professions p
+inner join user_professions up
+on p.id = up.professionId
+
+
+POST /profession/_search
+{
+  "from": 0,
+  "size": 2,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "professionIds": 70944
+          }
+        },
+        {
+          "term": {
+            "professionIds": 70931
+          }
+        }
+      ]
+    }
+  },
+  "aggregations": {
+    "professions": {
+      "terms": {
+        "size": 10,
+        "exclude": [
+          70944, 70931
+        ],
+        "field": "professionIds"
+      }
+    }
+  }
+}
+
+MATCH (p:Profession)<-[:HAS_PROFESSION]-(u)
+WHERE p.name IN ['Photographer']
+WITH count(u) AS userCount
+MATCH (p:Profession)<-[:HAS_PROFESSION]-(u)-[:HAS_SKILL]->(s)
+WHERE p.name IN ['Photographer']
+WITH s, toFloat(count(s)) AS count, userCount
+WITH s,count,userCount, toFloat(count/userCount) as sss
+RETURN s, count, userCount,sss
+ORDER BY count DESC LIMIT 100
+
+
+    'search': (q) => {
+      return new Promise((resolve, reject) => {
+        const search = {
+          index: userIndex,
+          body: {
+            query: {
+              match: {
+                professions: q
+              }
+            }
+          }
+        }
+
+        client.search(search, (error, response) => {
+          if (typeof error !== 'undefined') {
+            reject(error)
+          }
+          resolve(response.hits.hits)
+        })
+      })
+    },
+
+
+
+  // const related = professions.map(async (p) => {
+  //   return await Neo4jClient.getRP(p)
+      // .then(data => {
+      //   return data
+      // })
+  // })
+
+
+// app.get('/users', async function (req, res) {
+//   // Neo4jClient.getUsersByProfession(req.query.profession)
+//   // .then((data) => {
+//   //   res.send({users: data})
+//   // })
+
+//   // const data = await EsClient.search(req.query.profession)
+
+//   const professions = await Neo4jClient.searchProfessions2(req.query.profession)
+//   console.log(professions)
+
+
+//   const data = await EsClient.searchByProfessionIds(professions.primaryProfessions)
+
+//   res.send({users: data})
+// })
+
+
+select count(e.id), GROUP_CONCAT(p.`title`), u.createdAt
+from users u
+inner join `experiences` e
+on u.id = e.`authorId`
+left join professions p
+on e.`professionId` = p.id
+where u.`createdAt` > "2017-01-01 00:00:00"
+group by u.id
+order by u.id DESC
+
+DELETE FROM page_followers AS pf
+WHERE pf.id IN (
+  SELECT id
+  FROM (
+    select id
+    from `page_followers` pf
+    group by pageId, userId having count(*) > 1
+    order by id DESC) x
+)
+
+select concat(id,',',trim(firstName),',',trim(lastName)) as 'id,firstName,lastName' from users where id > 10 limit 5
+
+
+
+docker run -it --rm -e MYSQL_PWD=yWyZY9Haqv6pDG mysql mysql \
+  -h mysql-clone.5b2795f6.svc.dockerapp.io \
+  -P 33060 \
+  -D the-dots \
+  -u statistician \
+  --default-character-set=utf8 \
+  -B \
+  -e "select concat(id,',',trim(firstName),',',trim(lastName)) as 'id,firstName,lastName' from users where id > 10 limit 5" \
+  > ./sql.csv
+
+
+docker run -i --rm \
+  -e MYSQL_HOST=mysql-clone.5b2795f6.svc.dockerapp.io \
+  -e MYSQL_PWD=yWyZY9Haqv6pDG \
+  mysql mysql \
+  -P 33060 \
+  -u statistician \
+  -D the-dots \
+  --default-character-set=utf8 \
+  -B \
+  < ./import_sql/sql.sql \
+  > ./sql.csv
+
+writeStream.write(`${row.id},"${row.firstName}","${row.lastName}",${row.level},${row.searchScore},${row.availableForFullTime},${row.availableForFreelance},${row.availableForInternships},"${row.createdAt}","${row.tagline}","${row.profileImage}","${row.locationName}",${row.locationLatitude},${row.locationLongitude}\n`)
+
+
+MATCH (n)
+WITH n LIMIT 50000
+DETACH DELETE n
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: search
+spec:
+  containers:
+  - name: search-api
+    image: 'registry.gitlab.com/the-dots/search.next:master'
+    env:
+    - name: DEMO_GREETING
+      value: "Hello from the environment"
+    - name: DEMO_FAREWELL
+      value: "Such a sweet sorrow"
+  - name: search-neo4j
+    image: 'neo4j:3.3.1'
+  imagePullSecrets:
+  - name: reg-secret
+
+MATCH p=(n1:Profession {id: 70944})<-[:HAS_PROFESSION]-()-[:HAS_PROFESSION]->(n2:Profession {id: 70944}) RETURN p
+
+MATCH (p:Profession {id: 70931})<-[:HAS_PROFESSION]-(u)
+WITH count(u) AS userCount
+MATCH (u)-[:HAS_PROFESSION]->(p2)
+WHERE p2.id <> 70931
+RETURN p2.id AS professionId, p2.name AS professionName, count(p2) AS count, userCount
+ORDER BY count DESC LIMIT 10
+
+
+MATCH (p:Profession {id: 70931})<-[:HAS_PROFESSION]-(u)
+WITH count(u) AS userCount
+MATCH (p:Profession {id: 70931})<-[:HAS_PROFESSION]-(u)-[:HAS_PROFESSION]->(p2)
+RETURN p2.id AS professionId, p2.name AS professionName, count(p2) AS count, (toFloat(count(p2)) / toFloat(userCount)) AS pct
+ORDER BY count DESC LIMIT 10
+
+CALL algo.louvain('Profession', 'RELATES_TO',
+  {weightProperty:'weight', defaultValue:0.01, write: true,
+   writeProperty:'partition', concurrency:4})
+YIELD nodes, communityCount, iterations, loadMillis, computeMillis, writeMillis
