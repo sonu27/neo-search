@@ -5,7 +5,7 @@
   "neo4j": {
     "host": "neo4j",
     "user": "neo4j",
-    "pass": ""
+    "pass": "search"
   },
   "es": {
     "host": "http://elasticsearch",
